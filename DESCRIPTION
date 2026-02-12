@@ -1,0 +1,31 @@
+Package: dfr.dist.series
+Title: Series System Distributions from Dynamic Failure Rate Components
+Version: 0.1.0
+Authors@R: person("Alexander", "Towell", , "lex@metafunctor.com",
+                  role = c("aut", "cre"))
+Description: Compose multiple dynamic failure rate (DFR) distributions into
+    series system distributions. A series system fails when any component
+    fails, giving a system hazard equal to the sum of component hazards.
+    The resulting object inherits from 'dfr_dist' so all existing methods
+    (hazard, survival, CDF, density, sampling, MLE fitting) work
+    automatically.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends:
+    R (>= 3.5.0)
+Imports:
+    dfr.dist,
+    algebraic.dist,
+    likelihood.model,
+    generics
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/testthat/edition: 3
+Remotes:
+    github::queelius/algebraic.dist,
+    github::queelius/likelihood.model,
+    github::queelius/dfr.dist
