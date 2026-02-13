@@ -55,7 +55,7 @@ for (t0 in c(50, 100, 150, 200, 250)) {
 }
 ```
 
-The memory's constant hazard ($0.001$) dominates at early times when the Weibull and Gompertz hazards are still small. By $t = 200$, the Weibull's increasing hazard ($\propto t$) and the Gompertz's accelerating hazard ($\propto e^{bt}$) have overtaken memory as the primary risk drivers. This crossover is characteristic of mixed-type series systems.
+At $t = 50$, the constant memory hazard ($0.001$) is the largest contributor --- the Weibull ($0.0004$) and Gompertz ($0.0003$) are still small. Memory remains dominant through $t = 100$, but the Gompertz's exponential acceleration ($\propto e^{bt}$) overtakes it by around $t = 125\text{--}150$. By $t = 250$, the Gompertz contributes $0.015$ vs memory's constant $0.001$, dominating system risk. This crossover pattern is characteristic of mixed-type series systems: each failure mode has its "era" of dominance.
 
 ## Nested Series Systems
 
@@ -137,7 +137,7 @@ for (t0 in c(1, 10, 50, 100, 200)) {
 }
 ```
 
-The bathtub shape is visible: high hazard at $t = 1$ (infant mortality term $a/t^b$), a minimum around $t = 10\text{--}50$, then rising again at $t = 200$ (wear-out term $c \cdot t^d$). The constant exponential shock adds a baseline floor throughout.
+The bathtub shape is visible: high hazard at $t = 1$ ($\approx 0.50$, dominated by the infant mortality term $a/t^b$), dropping to a minimum at $t = 10$ ($\approx 0.17$), then rising steeply as the wear-out term $c \cdot t^d$ kicks in ($\approx 1.05$ at $t = 100$, $\approx 4.04$ at $t = 200$). The constant exponential shock ($0.001$) adds a negligible baseline floor.
 
 ### Effect on Cumulative Hazard
 
@@ -152,6 +152,8 @@ for (t0 in c(10, 50, 100)) {
     cat(sprintf("t=%3d: S(t) = %.6f\n", t0, S(t0)))
 }
 ```
+
+With this bathtub parameterization, the high infant mortality ($a = 0.5$, $b = 0.5$) drives the cumulative hazard so high that survival drops below 5% by $t = 10$. In practice, you would calibrate the bathtub parameters to match observed failure patterns. The numerical integration fallback handles these steep hazard functions correctly, just more slowly than the analytical path.
 
 ## Failure Attribution
 

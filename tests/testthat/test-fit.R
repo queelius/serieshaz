@@ -64,6 +64,49 @@ test_that("MLE handles right-censored series data", {
     expect_equal(est_total, 0.6, tolerance = 0.2)
 })
 
+test_that("mixed-type MLE produces positive fitted parameters", {
+    set.seed(42)
+    sys <- dfr_dist_series(list(
+        dfr_weibull(shape = 2, scale = 100),
+        dfr_exponential(0.01)
+    ))
+
+    samp <- sampler(sys)
+    df <- make_exact_data(samp(500))
+
+    solver <- fit(sys)
+    result <- suppressWarnings(solver(df, par = c(1.5, 80, 0.02)))
+
+    # All fitted parameters should be positive (negative rates are nonphysical)
+    expect_true(all(coef(result) > 0))
+    expect_true(result$converged)
+
+    # Parameters should be in a reasonable range of the true values
+    expect_equal(coef(result)[1], 2, tolerance = 1.0)     # shape
+    expect_equal(coef(result)[2], 100, tolerance = 50)     # scale
+    expect_equal(coef(result)[3], 0.01, tolerance = 0.01)  # rate
+})
+
+test_that("score at MLE is approximately zero for mixed-type series", {
+    set.seed(42)
+    sys <- dfr_dist_series(list(
+        dfr_weibull(shape = 2, scale = 100),
+        dfr_exponential(0.01)
+    ))
+
+    samp <- sampler(sys)
+    df <- make_exact_data(samp(300))
+
+    solver <- fit(sys)
+    result <- suppressWarnings(solver(df, par = c(1.5, 80, 0.02)))
+    mle_par <- coef(result)
+
+    # Score at MLE should be near zero (first-order optimality)
+    s <- score(sys)
+    score_at_mle <- s(df, par = mle_par)
+    expect_true(all(abs(score_at_mle) < 1.0))
+})
+
 test_that("fit returns fisher_mle with expected methods", {
     set.seed(42)
     sys <- make_exp_series(c(0.5, 0.5))
