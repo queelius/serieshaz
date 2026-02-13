@@ -44,11 +44,28 @@ integration.
 
 \strong{Score and Hessian}: Fall back to \code{numDeriv::grad} and
 \code{numDeriv::hessian} on the (correct) composed log-likelihood.
+
+\strong{Identifiability}: Exponential series systems are \emph{not}
+identifiable from system-level data alone --- only the sum of rates is
+identifiable. When fitting to data, check \code{sum(coef(result))} rather
+than individual rate parameters. Mixed-type series systems (e.g., Weibull +
+Gompertz) are generally identifiable because the components have different
+hazard shapes.
+
+\strong{Nested series}: A \code{dfr_dist_series} is itself a
+\code{dfr_dist}, so it can be used as a component in another series system.
+The resulting nested system's hazard is the sum of all leaf-component
+hazards.
+
+\strong{Class hierarchy}: \code{dfr_dist_series} inherits from
+\code{dfr_dist} -> \code{likelihood_model} -> \code{univariate_dist} ->
+\code{dist}. All methods from these parent classes work automatically.
 }
 \examples{
 \donttest{
 library(dfr.dist)
 
+# --- Basic exponential series ---
 # Three exponential components -> equivalent to single exponential
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),
@@ -59,15 +76,49 @@ sys <- dfr_dist_series(list(
 h <- hazard(sys)
 h(10)  # 0.6
 
-# Mixed Weibull + Gompertz series system
+# System survival at t = 5
+S <- surv(sys)
+S(5)   # exp(-0.6 * 5)
+
+# --- Mixed Weibull + Gompertz series ---
 sys2 <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100),
     dfr_gompertz(a = 0.01, b = 0.1)
 ))
+h2 <- hazard(sys2)
+h2(50)  # sum of Weibull and Gompertz hazards at t=50
 
-# Fit to data
+# --- Nested series ---
+subsystem <- dfr_dist_series(list(
+    dfr_exponential(0.05),
+    dfr_exponential(0.10)
+))
+full_system <- dfr_dist_series(list(
+    subsystem,
+    dfr_weibull(shape = 2, scale = 200)
+))
+
+# --- Fitting workflow ---
 solver <- fit(sys)
 # result <- solver(df, par = c(0.1, 0.2, 0.3))
+# coef(result)   # fitted parameters
+# vcov(result)   # variance-covariance matrix
+# logLik(result) # maximized log-likelihood
 }
 
 }
+\seealso{
+\code{\link{is_dfr_dist_series}} for the type predicate,
+\code{\link{ncomponents}} and \code{\link{component}} for introspection,
+\code{\link{param_layout}} for parameter index mapping,
+\code{\link{component_hazard}} for per-component hazard closures,
+\code{\link{sample_components}} for sampling component lifetimes,
+\code{\link[dfr.dist]{dfr_dist}} for the parent class constructor,
+\code{\link[algebraic.dist]{hazard}} for distribution generics
+
+Other series system: 
+\code{\link{assumptions.dfr_dist_series}()},
+\code{\link{is_dfr_dist_series}()},
+\code{\link{print.dfr_dist_series}()}
+}
+\concept{series system}

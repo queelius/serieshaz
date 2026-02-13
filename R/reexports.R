@@ -1,4 +1,4 @@
-#' @importFrom algebraic.dist hazard surv cdf inv_cdf sampler params sup
+#' @importFrom algebraic.dist hazard surv cdf inv_cdf sampler params
 #' @export
 algebraic.dist::hazard
 
@@ -26,6 +26,10 @@ likelihood.model::score
 
 #' @export
 likelihood.model::hess_loglik
+
+#' @importFrom likelihood.model assumptions
+#' @export
+likelihood.model::assumptions
 
 #' @importFrom generics fit
 #' @export

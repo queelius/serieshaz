@@ -1,0 +1,191 @@
+---
+title: "Series System Distributions: Overview"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Series System Distributions: Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4
+)
+```
+
+## The Problem
+
+Consider a server with three independent failure modes:
+
+- **Disk** — mechanical wear follows a Weibull distribution
+- **Memory** — random bit-flip failures follow an exponential distribution
+- **Power supply** — aging degradation follows a Gompertz distribution
+
+The server fails when *any* component fails. This is a **series system** — like a chain that breaks at its weakest link. The `dfr.dist.series` package lets you compose these failure modes into a single distribution that captures the full system behavior.
+
+## What Is a Series System?
+
+Given $m$ independent components with hazard functions $h_1(t), \ldots, h_m(t)$, the series system hazard is simply the **sum**:
+
+$$h_{sys}(t) = \sum_{j=1}^{m} h_j(t, \theta_j)$$
+
+Equivalently, the system survival is the **product** of component survivals:
+
+$$S_{sys}(t) = \prod_{j=1}^{m} S_j(t, \theta_j)$$
+
+This follows directly from component independence: the probability that the system survives to time $t$ is the probability that *all* components survive to time $t$.
+
+## Quick Start
+
+```{r quick-start}
+library(dfr.dist.series)
+
+# Define three failure mode components
+disk    <- dfr_weibull(shape = 2, scale = 500)
+memory  <- dfr_exponential(0.001)
+psu     <- dfr_gompertz(a = 0.0001, b = 0.02)
+
+# Compose into a series system
+server <- dfr_dist_series(list(disk, memory, psu))
+print(server)
+```
+
+The system object has 5 parameters total: 2 from Weibull + 1 from exponential + 2 from Gompertz. You can see how they map to components:
+
+```{r layout}
+param_layout(server)
+```
+
+## Everything from dfr.dist Works
+
+Because `dfr_dist_series` inherits from `dfr_dist`, all standard distribution methods work out of the box — no special code needed.
+
+### Hazard and Survival
+
+```{r hazard-surv}
+h <- hazard(server)
+S <- surv(server)
+
+# Evaluate at t = 100 hours
+cat(sprintf("System hazard at t=100:  %.6f\n", h(100)))
+cat(sprintf("System survival at t=100: %.4f\n", S(100)))
+```
+
+The hazard is low ($\approx 0.0025$) because the Weibull scale is 500 and the exponential rate is only 0.001. The survival probability of $\approx 84\%$ at $t = 100$ tells us most servers are still running at 100 hours.
+
+### CDF and Density
+
+```{r cdf-density}
+F_sys <- cdf(server)
+f_sys <- density(server)
+
+cat(sprintf("P(T <= 100) = %.4f\n", F_sys(100)))
+cat(sprintf("f(100)      = %.6f\n", f_sys(100)))
+```
+
+The CDF and survival sum to 1: $F(100) + S(100) = 1$. The density $f(t) = h(t) \cdot S(t)$ gives the instantaneous failure rate weighted by the probability of surviving to that point.
+
+### Sampling
+
+```{r sampling}
+samp <- sampler(server)
+set.seed(42)
+times <- samp(5)
+times
+```
+
+### Log-Likelihood
+
+```{r loglik}
+ll <- loglik(server)
+df <- data.frame(t = c(100, 200, 150, 300, 250), delta = c(1, 1, 0, 1, 0))
+ll(df)
+```
+
+### Fitting (MLE)
+
+```{r fit-demo}
+# Generate data from the true system
+set.seed(123)
+true_times <- samp(200)
+train <- data.frame(t = true_times, delta = rep(1L, 200))
+
+# Fit model to data
+solver <- fit(server)
+result <- solver(train, par = c(1.5, 400, 0.002, 0.001, 0.01))
+
+cat("True parameters:  ", params(server), "\n")
+cat("Fitted parameters:", coef(result), "\n")
+```
+
+The MLE recovers the true parameters reasonably well from 200 observations. The Weibull shape and scale are the most precisely estimated because the disk's increasing hazard gives the likelihood a distinctive shape. The Gompertz parameters are harder to pin down because its contribution is small at early times.
+
+## System Introspection
+
+The package provides functions specifically for understanding series systems.
+
+### Component Count and Extraction
+
+```{r introspection}
+ncomponents(server)  # 3
+
+# Extract the Weibull (disk) component
+disk_comp <- component(server, 1)
+params(disk_comp)
+```
+
+### Component Hazard Decomposition
+
+```{r hazard-decomp}
+# Get per-component hazard closures
+h1 <- component_hazard(server, 1)  # disk
+h2 <- component_hazard(server, 2)  # memory
+h3 <- component_hazard(server, 3)  # PSU
+
+# At t = 200, which component contributes most?
+t0 <- 200
+hazards <- c(Disk = h1(t0), Memory = h2(t0), PSU = h3(t0))
+cat(sprintf("Disk:   %.6f (%.1f%%)\n", hazards[1], 100 * hazards[1] / sum(hazards)))
+cat(sprintf("Memory: %.6f (%.1f%%)\n", hazards[2], 100 * hazards[2] / sum(hazards)))
+cat(sprintf("PSU:    %.6f (%.1f%%)\n", hazards[3], 100 * hazards[3] / sum(hazards)))
+cat(sprintf("System: %.6f\n", h(t0)))
+cat(sprintf("Sum:    %.6f (matches system)\n", sum(hazards)))
+```
+
+At $t = 200$, the PSU's Gompertz degradation and the disk's Weibull wear-out dominate system risk, while the memory's constant exponential hazard contributes a smaller share. This decomposition is the key advantage of series system modeling: it reveals *which* failure mode drives system risk at any given age.
+
+### Failure Attribution via Sampling
+
+```{r failure-attr}
+set.seed(42)
+mat <- sample_components(server, n = 10000)
+
+# System lifetime = min across components
+t_sys <- apply(mat, 1, min)
+
+# Which component caused each failure?
+failing <- apply(mat, 1, which.min)
+cat("Failure proportions:\n")
+round(table(failing) / length(failing), 3)
+```
+
+## The Ecosystem
+
+`dfr.dist.series` builds on three packages:
+
+- **[algebraic.dist](https://github.com/queelius/algebraic.dist)** — Base distribution generics: `hazard`, `surv`, `cdf`, `inv_cdf`, `sampler`, `params`
+- **[likelihood.model](https://github.com/queelius/likelihood.model)** — Statistical inference: `loglik`, `score`, `hess_loglik`, `fit`, `assumptions`
+- **[dfr.dist](https://github.com/queelius/dfr.dist)** — DFR distributions: `dfr_dist`, `dfr_exponential`, `dfr_weibull`, `dfr_gompertz`, `dfr_loglogistic`
+
+The inheritance chain is: `dfr_dist_series` → `dfr_dist` → `likelihood_model` → `univariate_dist` → `dist`. Every method defined at any level in this chain works automatically on series systems.
+
+## Where to Go Next
+
+- `vignette("series-math")` — Mathematical foundations and derivations
+- `vignette("series-fitting")` — MLE fitting workflows, identifiability, and diagnostics
+- `vignette("series-advanced")` — Nested systems, custom components, and failure attribution

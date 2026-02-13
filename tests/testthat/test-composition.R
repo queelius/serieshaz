@@ -129,6 +129,33 @@ test_that("analytical cum_haz_rate is used when all components provide it", {
     expect_equal(H(10), 6.0, tolerance = 1e-10)  # 0.6 * 10
 })
 
+test_that("vectorized t input works for hazard, surv, cdf, density", {
+    sys <- make_exp_series(c(0.1, 0.2, 0.3))
+    ref <- dfr_exponential(0.6)
+
+    t_vec <- c(0.5, 1, 5, 10, 50)
+
+    # Vectorized calls
+    h_sys <- hazard(sys)
+    S_sys <- surv(sys)
+    F_sys <- cdf(sys)
+    f_sys <- density(sys)
+
+    h_ref <- hazard(ref)
+    S_ref <- surv(ref)
+    F_ref <- cdf(ref)
+    f_ref <- density(ref)
+
+    expect_equal(h_sys(t_vec), h_ref(t_vec), tolerance = 1e-10)
+    expect_equal(S_sys(t_vec), S_ref(t_vec), tolerance = 1e-10)
+    expect_equal(F_sys(t_vec), F_ref(t_vec), tolerance = 1e-10)
+    expect_equal(f_sys(t_vec), f_ref(t_vec), tolerance = 1e-10)
+
+    # Verify vectorized == element-wise scalar calls
+    h_scalar <- vapply(t_vec, h_sys, numeric(1))
+    expect_equal(h_sys(t_vec), h_scalar, tolerance = 1e-10)
+})
+
 test_that("mixed series with no cum_haz falls back to numerical", {
     # Create a component without analytical cum_haz_rate
     custom <- dfr_dist(

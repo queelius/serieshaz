@@ -1,0 +1,48 @@
+url: https://queelius.github.io/dfr.dist.series/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [search, github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/series-overview.html
+    github:
+      icon: fa-github
+      href: https://github.com/queelius/dfr.dist.series
+
+reference:
+  - title: "Series System Constructor"
+    desc: "Create and identify series system distributions"
+    contents:
+      - dfr_dist_series
+      - is_dfr_dist_series
+      - print.dfr_dist_series
+      - assumptions.dfr_dist_series
+
+  - title: "System Introspection"
+    desc: "Examine and decompose series system components"
+    contents:
+      - ncomponents
+      - component
+      - param_layout
+      - component_hazard
+      - sample_components
+
+articles:
+  - title: "Getting Started"
+    contents:
+      - series-overview
+
+  - title: "Theory"
+    contents:
+      - series-math
+
+  - title: "Practical"
+    contents:
+      - series-fitting
+      - series-advanced

@@ -10,18 +10,65 @@ param_layout(x, ...)
 \method{param_layout}{dfr_dist_series}(x, ...)
 }
 \arguments{
-\item{x}{A system object.}
+\item{x}{A system object (e.g., \code{\link{dfr_dist_series}}).}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments passed to methods.}
 }
 \value{
-A list mapping component indices to global parameter indices.
+A list of integer vectors, one per component, containing global
+parameter indices.
 }
 \description{
-Get the parameter layout for a system
+Returns the mapping from global (flat) parameter indices to per-component
+parameter indices, enabling the series system to distribute a single
+parameter vector across its components.
+}
+\details{
+Parameters across all components are stored as a single concatenated
+vector \eqn{\theta = (\theta_1, \ldots, \theta_m)}. The layout maps
+global indices back to each component. For example, with:
+\itemize{
+\item Component 1: Weibull (shape, scale) --- 2 parameters
+\item Component 2: Exponential (rate) --- 1 parameter
+\item Component 3: Gompertz (a, b) --- 2 parameters
+}
+the layout is \code{list(1:2, 3, 4:5)}, so the global parameter vector
+\code{c(shape1, scale1, rate2, a3, b3)} gets sliced as \code{par[1:2]}
+for component 1, \code{par[3]} for component 2, and \code{par[4:5]} for
+component 3.
+
+This design enables standard optimizers to work on a flat vector while
+the series system internally distributes parameters to the correct
+components.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{param_layout(dfr_dist_series)}: Parameter index mapping for a series system.
 
 }}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.05),
+    dfr_gompertz(a = 0.01, b = 0.1)
+))
+param_layout(sys)
+# list(1:2, 3, 4:5)
+}
+
+}
+\seealso{
+\code{\link{component}} to extract a component with its parameters,
+\code{\link[algebraic.dist]{params}} to get the full parameter vector,
+\code{\link{dfr_dist_series}} for the constructor
+
+Other system introspection: 
+\code{\link{component}()},
+\code{\link{component_hazard}()},
+\code{\link{ncomponents}()},
+\code{\link{sample_components}()}
+}
+\concept{system introspection}

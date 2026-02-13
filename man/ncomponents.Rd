@@ -10,18 +10,49 @@ ncomponents(x, ...)
 \method{ncomponents}{dfr_dist_series}(x, ...)
 }
 \arguments{
-\item{x}{A system object.}
+\item{x}{A system object (e.g., \code{\link{dfr_dist_series}}).}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments passed to methods.}
 }
 \value{
 Integer, the number of components.
 }
 \description{
-Get the number of components in a system
+Returns the number of components \eqn{m} in a series system, corresponding
+to the number of terms in \eqn{h_{sys}(t) = \sum_{j=1}^{m} h_j(t)}.
+}
+\details{
+For a \code{\link{dfr_dist_series}} object created from a list of
+\code{m} components, this simply returns \code{m}. This is useful for
+programmatically iterating over components, e.g., for plotting hazard
+decompositions or computing failure attribution.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{ncomponents(dfr_dist_series)}: Number of components in a series system.
 
 }}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_exponential(0.1),
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_gompertz(a = 0.01, b = 0.05)
+))
+ncomponents(sys)  # 3
+}
+
+}
+\seealso{
+\code{\link{component}} to extract individual components,
+\code{\link{dfr_dist_series}} for the constructor
+
+Other system introspection: 
+\code{\link{component}()},
+\code{\link{component_hazard}()},
+\code{\link{param_layout}()},
+\code{\link{sample_components}()}
+}
+\concept{system introspection}

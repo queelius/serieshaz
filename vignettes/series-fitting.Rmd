@@ -1,0 +1,320 @@
+---
+title: "Fitting Series Systems to Data"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Fitting Series Systems to Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4
+)
+```
+
+## Introduction
+
+In practice, we observe system-level failure data: the time at which a system failed (or was censored), but often *not* which component caused the failure. The `dfr.dist.series` package fits series system models to such data via maximum likelihood estimation (MLE).
+
+## Data Format
+
+The fitting functions expect a data frame with two columns:
+
+| Column | Type | Meaning |
+|--------|------|---------|
+| `t` | numeric | Observed time |
+| `delta` | integer | Censoring indicator |
+
+The censoring indicator values are:
+
+- `1` — exact observation (the system failed at time `t`)
+- `0` — right-censored (the system was still running at time `t`)
+- `-1` — left-censored (the system had already failed by time `t`)
+
+## Basic Fitting Workflow
+
+### Step 1: Define the System Model
+
+```{r define-model}
+library(dfr.dist.series)
+
+# Hypothesize: system has two failure modes
+#   - Wear-out (Weibull)
+#   - Random shock (exponential)
+model <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.01)
+))
+```
+
+### Step 2: Simulate Training Data
+
+In practice you'd have real field data. Here we simulate from known parameters to demonstrate the workflow.
+
+```{r simulate-data}
+set.seed(42)
+true_par <- c(2, 100, 0.01)  # shape, scale, rate
+
+samp <- sampler(model)
+n <- 300
+times <- samp(n, par = true_par)
+train <- data.frame(t = times, delta = rep(1L, n))
+
+summary(train$t)
+```
+
+### Step 3: Fit the Model
+
+```{r fit-model}
+solver <- fit(model)
+
+# Provide initial parameter guesses
+init_par <- c(1.5, 80, 0.02)
+result <- solver(train, par = init_par)
+```
+
+### Step 4: Extract Results
+
+```{r extract-results}
+# Fitted parameters
+cat("True parameters:", true_par, "\n")
+cat("Fitted parameters:", coef(result), "\n")
+
+# Log-likelihood at MLE
+cat("Log-likelihood:", logLik(result), "\n")
+
+# Variance-covariance matrix
+vcov(result)
+```
+
+## Initial Parameter Selection
+
+The choice of initial parameters can affect convergence. Strategies include:
+
+1. **Domain knowledge**: Use engineering estimates or handbook values
+2. **Simpler model first**: Fit a single exponential to get a rough rate, then use that as a starting point
+3. **Multiple starts**: Try several initial values and keep the best fit
+
+```{r multi-start}
+# Strategy: try a few initial guesses, keep the best
+init_guesses <- list(
+    c(1.5, 80,  0.02),
+    c(2.5, 120, 0.005),
+    c(1.0, 50,  0.05)
+)
+
+best_ll <- -Inf
+best_result <- NULL
+for (init in init_guesses) {
+    res <- tryCatch(solver(train, par = init), error = function(e) NULL)
+    if (!is.null(res) && logLik(res) > best_ll) {
+        best_ll <- logLik(res)
+        best_result <- res
+    }
+}
+cat("Best log-likelihood:", best_ll, "\n")
+cat("Best parameters:", coef(best_result), "\n")
+```
+
+## Identifiability
+
+### Exponential Series: Non-Identifiable
+
+When all components are exponential, only the **sum of rates** is identifiable from system-level data. The system hazard $h_{sys}(t) = \sum_j \lambda_j$ is constant, so any partition of rates that sums to the same total produces the same likelihood.
+
+```{r identifiability-exp}
+# True rates: 0.1, 0.2, 0.3 (sum = 0.6)
+true_rates <- c(0.1, 0.2, 0.3)
+exp_sys <- dfr_dist_series(lapply(true_rates, dfr_exponential))
+
+set.seed(123)
+exp_samp <- sampler(exp_sys)
+exp_data <- data.frame(t = exp_samp(500), delta = rep(1L, 500))
+
+exp_solver <- fit(exp_sys)
+exp_result <- exp_solver(exp_data, par = c(0.15, 0.25, 0.25))
+
+cat("True sum of rates:", sum(true_rates), "\n")
+cat("Fitted sum of rates:", sum(coef(exp_result)), "\n")
+cat("Individual rates (unreliable):", coef(exp_result), "\n")
+```
+
+The sum is accurately estimated, but individual rates are not meaningful.
+
+### Mixed Types: Identifiable
+
+When components have different distributional forms, the system is generally identifiable because each component shapes the hazard differently.
+
+```{r identifiability-mixed}
+# Weibull (increasing hazard) + Exponential (constant hazard)
+mixed <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.01)
+))
+
+set.seed(42)
+mixed_samp <- sampler(mixed)
+mixed_data <- data.frame(t = mixed_samp(500), delta = rep(1L, 500))
+
+mixed_solver <- fit(mixed)
+mixed_result <- mixed_solver(mixed_data, par = c(1.5, 80, 0.02))
+
+cat("True:   shape=2.00, scale=100.0, rate=0.010\n")
+cat(sprintf("Fitted: shape=%.2f, scale=%.1f, rate=%.3f\n",
+            coef(mixed_result)[1], coef(mixed_result)[2], coef(mixed_result)[3]))
+```
+
+## Handling Censored Data
+
+In reliability studies, some units are removed from the test before failing (right-censoring). The MLE correctly accounts for this.
+
+```{r censored-data}
+set.seed(42)
+model <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.01)
+))
+true_par <- c(2, 100, 0.01)
+
+# Generate true failure times
+n <- 500
+true_times <- sampler(model)(n, par = true_par)
+
+# Right-censor at a fixed time horizon
+censor_time <- 80
+observed_t <- pmin(true_times, censor_time)
+delta <- as.integer(true_times <= censor_time)
+cens_data <- data.frame(t = observed_t, delta = delta)
+
+cat("Proportion censored:", round(1 - mean(delta), 3), "\n")
+
+# Fit with censored data
+solver <- fit(model)
+cens_result <- solver(cens_data, par = c(1.5, 80, 0.02))
+
+cat("True parameters:    ", true_par, "\n")
+cat("Fitted (censored):  ", round(coef(cens_result), 4), "\n")
+cat("Fitted (uncensored):", round(coef(result), 4), "\n")
+```
+
+With censoring, we lose information about what would have happened after $t = 80$, which primarily affects the Weibull shape estimate (shape governs late-life behavior). Still, the MLE correctly accounts for the censoring mechanism and recovers parameters reasonably well. Larger sample sizes or lower censoring proportions improve precision.
+
+## Model Diagnostics
+
+### Log-Likelihood Comparison
+
+Compare competing models using log-likelihood, AIC, or BIC:
+
+```{r model-comparison}
+# Model 1: Weibull + Exponential (3 parameters)
+m1 <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.01)
+))
+
+# Model 2: Two Weibulls (4 parameters)
+m2 <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_weibull(shape = 1.5, scale = 200)
+))
+
+# Generate data from Model 1
+set.seed(42)
+data_m1 <- data.frame(
+    t = sampler(m1)(300, par = c(2, 100, 0.01)),
+    delta = rep(1L, 300)
+)
+
+r1 <- fit(m1)(data_m1, par = c(1.5, 80, 0.02))
+r2 <- fit(m2)(data_m1, par = c(1.5, 80, 1.2, 150))
+
+k1 <- length(coef(r1))
+k2 <- length(coef(r2))
+ll1 <- logLik(r1)
+ll2 <- logLik(r2)
+
+aic1 <- -2 * ll1 + 2 * k1
+aic2 <- -2 * ll2 + 2 * k2
+
+cat(sprintf("Model 1 (Weibull+Exp):    LL=%.2f, k=%d, AIC=%.2f\n", ll1, k1, aic1))
+cat(sprintf("Model 2 (Weibull+Weibull): LL=%.2f, k=%d, AIC=%.2f\n", ll2, k2, aic2))
+cat("Preferred model (lower AIC):", ifelse(aic1 < aic2, "Model 1", "Model 2"), "\n")
+```
+
+### Model Assumptions
+
+Review what assumptions your model makes:
+
+```{r assumptions}
+assumptions(m1)
+```
+
+## Confidence Intervals
+
+### Wald Confidence Intervals
+
+Use the variance-covariance matrix from `vcov()` to construct Wald-type confidence intervals:
+
+```{r wald-ci}
+result <- fit(m1)(data_m1, par = c(1.5, 80, 0.02))
+est <- coef(result)
+se <- sqrt(diag(vcov(result)))
+
+alpha <- 0.05
+z <- qnorm(1 - alpha / 2)
+
+ci_lower <- est - z * se
+ci_upper <- est + z * se
+
+ci_table <- data.frame(
+    Parameter = c("shape", "scale", "rate"),
+    Estimate = est,
+    SE = se,
+    Lower = ci_lower,
+    Upper = ci_upper
+)
+print(ci_table, digits = 4)
+```
+
+### Delta Method for MTBF
+
+The mean time between failures (MTBF) is a function of the parameters. The delta method provides approximate confidence intervals for functions of parameters.
+
+```{r delta-method}
+# For this system, MTBF is not available in closed form, but we can
+# approximate it numerically and use the delta method
+par_hat <- coef(result)
+V <- vcov(result)
+
+# Numerical MTBF estimate via integration of survival function
+S_fn <- surv(m1)
+
+# Wrap S_fn for integrate() which may pass vectorized t values
+compute_mtbf <- function(p) {
+    integrate(function(t) sapply(t, function(ti) S_fn(ti, par = p)),
+              0, Inf, subdivisions = 1000L)$value
+}
+
+mtbf <- compute_mtbf(par_hat)
+cat("Estimated MTBF:", round(mtbf, 2), "\n")
+
+# Delta method: gradient of MTBF w.r.t. parameters
+eps <- 1e-5
+grad_mtbf <- numeric(length(par_hat))
+for (k in seq_along(par_hat)) {
+    par_plus <- par_minus <- par_hat
+    par_plus[k] <- par_hat[k] + eps
+    par_minus[k] <- par_hat[k] - eps
+    grad_mtbf[k] <- (compute_mtbf(par_plus) - compute_mtbf(par_minus)) / (2 * eps)
+}
+
+se_mtbf <- sqrt(t(grad_mtbf) %*% V %*% grad_mtbf)
+cat(sprintf("MTBF = %.2f +/- %.2f (95%% CI: [%.2f, %.2f])\n",
+            mtbf, 1.96 * se_mtbf, mtbf - 1.96 * se_mtbf, mtbf + 1.96 * se_mtbf))
+```

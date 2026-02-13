@@ -10,17 +10,31 @@ component_hazard(x, j, ...)
 \method{component_hazard}{dfr_dist_series}(x, j, ...)
 }
 \arguments{
-\item{x}{A system object.}
+\item{x}{A system object (e.g., \code{\link{dfr_dist_series}}).}
 
-\item{j}{Component index.}
+\item{j}{Component index (integer, \code{1 <= j <= ncomponents(x)}).}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments passed to methods.}
 }
 \value{
-A closure computing component j's hazard.
+A closure \code{function(t, par = NULL, ...)} that evaluates
+component \code{j}'s hazard rate. If \code{par} is \code{NULL}, the
+component's default parameters (from the system) are used.
 }
 \description{
-Get the hazard function for a specific component
+Returns a closure that computes the hazard rate for component \code{j}
+of a series system. Useful for plotting hazard decompositions and
+understanding each component's contribution to system risk.
+}
+\details{
+The returned closure evaluates \eqn{h_j(t, \theta_j)} for component
+\code{j}. The \code{par} argument accepts \emph{component-local}
+parameters (not the full system parameter vector). This is useful for:
+\itemize{
+\item Plotting individual hazard contributions
+\item Verifying that \eqn{\sum_j h_j(t) = h_{sys}(t)}
+\item Sensitivity analysis on a single component
+}
 }
 \section{Methods (by class)}{
 \itemize{
@@ -29,3 +43,35 @@ system. Returns \code{function(t, par_j = NULL, ...)} where \code{par_j}
 are the component-local parameters.
 
 }}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_exponential(0.1),
+    dfr_exponential(0.2)
+))
+
+h1 <- component_hazard(sys, 1)
+h2 <- component_hazard(sys, 2)
+h_sys <- hazard(sys)
+
+# Verify hazard sum property
+t <- 10
+h1(t) + h2(t)  # 0.3
+h_sys(t)        # 0.3 (same!)
+}
+
+}
+\seealso{
+\code{\link{component}} to extract the full component object,
+\code{\link[algebraic.dist]{hazard}} for the system-level hazard,
+\code{\link{dfr_dist_series}} for the constructor
+
+Other system introspection: 
+\code{\link{component}()},
+\code{\link{ncomponents}()},
+\code{\link{param_layout}()},
+\code{\link{sample_components}()}
+}
+\concept{system introspection}

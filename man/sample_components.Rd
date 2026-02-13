@@ -10,20 +10,40 @@ sample_components(x, n, ...)
 \method{sample_components}{dfr_dist_series}(x, n, par = NULL, ...)
 }
 \arguments{
-\item{x}{A system object.}
+\item{x}{A system object (e.g., \code{\link{dfr_dist_series}}).}
 
-\item{n}{Number of samples.}
+\item{n}{Number of samples (rows).}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments passed to methods.}
 
 \item{par}{Optional parameter vector override.}
 }
 \value{
-An n x m numeric matrix of component lifetimes.
+An \eqn{n \times m} numeric matrix of component lifetimes, with
+columns named \code{comp1}, \code{comp2}, etc.
 }
 \description{
-Generates an n x m matrix where column j contains independent samples
-from component j's lifetime distribution.
+Generates an \eqn{n \times m} matrix where column \eqn{j} contains
+independent samples from component \eqn{j}'s lifetime distribution.
+The system lifetime is the row-wise minimum.
+}
+\details{
+Each column is sampled independently using the component's own sampler.
+Since the series system fails when \emph{any} component fails, the system
+lifetime for each observation is:
+
+\preformatted{
+t_sys <- apply(mat, 1, min)
+}
+
+The failing component for each observation can be identified via:
+
+\preformatted{
+failing <- apply(mat, 1, which.min)
+}
+
+This enables failure attribution analysis: what proportion of system
+failures are caused by each component?
 }
 \section{Methods (by class)}{
 \itemize{
@@ -32,3 +52,39 @@ system. Returns an n x m matrix where column j holds samples from
 component j. The system lifetime is \code{apply(mat, 1, min)}.
 
 }}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_exponential(0.1),
+    dfr_exponential(0.2),
+    dfr_exponential(0.3)
+))
+
+set.seed(42)
+mat <- sample_components(sys, n = 1000)
+dim(mat)  # 1000 x 3
+
+# System lifetimes
+t_sys <- apply(mat, 1, min)
+
+# Which component caused each failure?
+failing <- apply(mat, 1, which.min)
+table(failing) / 1000
+# Proportions ~= c(1/6, 2/6, 3/6) for rates (0.1, 0.2, 0.3)
+}
+
+}
+\seealso{
+\code{\link[algebraic.dist]{sampler}} for system-level sampling,
+\code{\link{component}} to extract individual component objects,
+\code{\link{dfr_dist_series}} for the constructor
+
+Other system introspection: 
+\code{\link{component}()},
+\code{\link{component_hazard}()},
+\code{\link{ncomponents}()},
+\code{\link{param_layout}()}
+}
+\concept{system introspection}

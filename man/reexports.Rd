@@ -12,6 +12,7 @@
 \alias{loglik}
 \alias{score}
 \alias{hess_loglik}
+\alias{assumptions}
 \alias{fit}
 \alias{dfr_dist}
 \alias{is_dfr_dist}
@@ -33,6 +34,6 @@ below to see their documentation.
 
   \item{generics}{\code{\link[generics]{fit}}}
 
-  \item{likelihood.model}{\code{\link[likelihood.model]{hess_loglik}}, \code{\link[likelihood.model]{loglik}}, \code{\link[likelihood.model]{score}}}
+  \item{likelihood.model}{\code{\link[likelihood.model]{assumptions}}, \code{\link[likelihood.model]{hess_loglik}}, \code{\link[likelihood.model]{loglik}}, \code{\link[likelihood.model]{score}}}
 }}
 

@@ -66,7 +66,7 @@ test_that("score matches finite-difference approximation", {
 test_that("Hessian matches finite-difference of score", {
     sys <- make_weibull_series(shapes = c(2, 1.5), scales = c(100, 200))
     df <- make_exact_data(c(50, 80, 120, 30, 90))
-    par <- c(2, 1.5, 100, 200)
+    par <- c(2, 100, 1.5, 200)
 
     H <- hess_loglik(sys)
     hess_val <- H(df, par = par)

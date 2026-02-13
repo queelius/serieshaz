@@ -11,6 +11,47 @@
 
 \item{...}{Additional arguments (unused).}
 }
-\description{
-Print method for series system distributions
+\value{
+Invisibly returns \code{x}.
 }
+\description{
+Displays a human-readable summary of a series system distribution,
+including the number of components, per-component parameter counts and
+values, and the system hazard/survival formulas.
+}
+\details{
+The output includes:
+\itemize{
+\item Header with the number of components
+\item One line per component showing its parameter count and current
+parameter values (or "unknown" if parameters are \code{NULL})
+\item The system hazard formula: \eqn{h_{sys}(t) = \sum_j h_j(t, \theta_j)}
+\item The system survival formula: \eqn{S_{sys}(t) = \prod_j S_j(t, \theta_j)}
+}
+}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_exponential(0.1),
+    dfr_weibull(shape = 2, scale = 100)
+))
+print(sys)
+# Series system distribution with 2 components
+#   Component 1: 1 param(s) [0.1]
+#   Component 2: 2 param(s) [2, 100]
+# System hazard: h_sys(t) = sum_j h_j(t, theta_j)
+# Survival: S_sys(t) = exp(-H_sys(t)) = prod_j S_j(t, theta_j)
+}
+
+}
+\seealso{
+\code{\link{dfr_dist_series}} for the constructor
+
+Other series system: 
+\code{\link{assumptions.dfr_dist_series}()},
+\code{\link{dfr_dist_series}()},
+\code{\link{is_dfr_dist_series}()}
+}
+\concept{series system}

@@ -15,5 +15,54 @@
 Character vector of model assumptions.
 }
 \description{
-Assumptions for series system distributions
+Returns the statistical and structural assumptions underlying a series
+system model, which are important for the validity of MLE-based inference.
 }
+\details{
+The assumptions returned are:
+\itemize{
+\item \strong{Series structure}: The system fails when any component
+fails (weakest-link model)
+\item \strong{Component independence}: Component lifetimes are
+statistically independent
+\item \strong{Non-negative hazard}: Each component hazard satisfies
+\eqn{h_j(t) \geq 0} for all \eqn{t > 0}
+\item \strong{Proper distribution}: The cumulative hazard diverges,
+ensuring \eqn{S_{sys}(t) \to 0} as \eqn{t \to \infty}
+\item \strong{Positive support}: The time domain is \eqn{(0, \infty)}
+\item \strong{Independent observations}: The observed lifetimes are
+independent
+\item \strong{Censoring convention}: \code{delta = 1} for exact,
+\code{0} for right-censored, \code{-1} for left-censored
+\item \strong{Non-informative censoring}: The censoring mechanism
+carries no information about the failure process
+}
+
+These assumptions are required for the MLE fitting procedure
+(\code{\link[generics]{fit}}) to produce valid estimates. Violation of
+component independence, in particular, invalidates the hazard-sum property
+that defines series systems.
+}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_exponential(0.1),
+    dfr_weibull(shape = 2, scale = 100)
+))
+assumptions(sys)
+}
+
+}
+\seealso{
+\code{\link[likelihood.model]{assumptions}} for the generic,
+\code{\link{dfr_dist_series}} for the constructor,
+\code{vignette("series-fitting")} for how assumptions affect inference
+
+Other series system: 
+\code{\link{dfr_dist_series}()},
+\code{\link{is_dfr_dist_series}()},
+\code{\link{print.dfr_dist_series}()}
+}
+\concept{series system}

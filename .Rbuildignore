@@ -2,3 +2,8 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^CLAUDE\.md$
+^\.claude$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^vignettes/.*_cache$

@@ -10,17 +10,34 @@ component(x, j, ...)
 \method{component}{dfr_dist_series}(x, j, ...)
 }
 \arguments{
-\item{x}{A system object.}
+\item{x}{A system object (e.g., \code{\link{dfr_dist_series}}).}
 
-\item{j}{Component index.}
+\item{j}{Component index (integer, \code{1 <= j <= ncomponents(x)}).}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments passed to methods.}
 }
 \value{
-A distribution object for component j.
+A \code{\link[dfr.dist]{dfr_dist}} object for component \code{j}.
 }
 \description{
-Extract a component from a system
+Extracts component \code{j} from a series system as a standalone
+\code{\link[dfr.dist]{dfr_dist}} object, with its parameters set to the
+current values from the system's parameter vector (via the layout).
+}
+\details{
+The returned component object is a copy of the original component with its
+\code{par} field updated to reflect the current system-level parameter
+vector. This means you can evaluate the extracted component's hazard,
+survival, etc. directly:
+
+\preformatted{
+comp1 <- component(sys, 1)
+h1 <- hazard(comp1)
+h1(10)  # evaluates using parameters from the system
+}
+
+Changes to the extracted component do \emph{not} propagate back to the
+original series system.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -28,3 +45,35 @@ Extract a component from a system
 with its current parameters from the series system's parameter vector.
 
 }}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.05)
+))
+
+# Extract the Weibull component
+wb <- component(sys, 1)
+params(wb)  # c(2, 100)
+
+# Evaluate its hazard independently
+h_wb <- hazard(wb)
+h_wb(50)
+}
+
+}
+\seealso{
+\code{\link{ncomponents}} for the component count,
+\code{\link{component_hazard}} for getting just the hazard closure,
+\code{\link{param_layout}} for parameter index mapping,
+\code{\link{dfr_dist_series}} for the constructor
+
+Other system introspection: 
+\code{\link{component_hazard}()},
+\code{\link{ncomponents}()},
+\code{\link{param_layout}()},
+\code{\link{sample_components}()}
+}
+\concept{system introspection}

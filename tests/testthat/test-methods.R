@@ -101,6 +101,28 @@ test_that("assumptions returns series-specific assumptions", {
     expect_true(any(grepl("independence", a, ignore.case = TRUE)))
 })
 
+test_that("component returns original params when system par is NULL", {
+    # Build components with known params
+    comp1 <- dfr_exponential(0.1)
+    comp2 <- dfr_exponential(0.2)
+
+    # Construct system with explicit n_par but NULL par
+    sys <- dfr_dist_series(
+        components = list(comp1, comp2),
+        par = NULL,
+        n_par = c(1L, 1L)
+    )
+
+    # component() should return the component with its original params
+    c1 <- component(sys, 1)
+    expect_true(is_dfr_dist(c1))
+    # When sys$par is NULL, component returns the original component unchanged
+    expect_equal(params(c1), 0.1)
+
+    c2 <- component(sys, 2)
+    expect_equal(params(c2), 0.2)
+})
+
 test_that("params returns concatenated parameter vector", {
     sys <- make_exp_series(c(0.1, 0.2, 0.3))
     expect_equal(params(sys), c(0.1, 0.2, 0.3))

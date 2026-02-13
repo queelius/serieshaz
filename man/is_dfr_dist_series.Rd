@@ -10,8 +10,44 @@ is_dfr_dist_series(x)
 \item{x}{Object to test.}
 }
 \value{
-Logical.
+Logical scalar.
 }
 \description{
-Test whether an object is a dfr_dist_series
+Returns \code{TRUE} if \code{x} inherits from \code{"dfr_dist_series"},
+\code{FALSE} otherwise.
 }
+\details{
+Since \code{dfr_dist_series} inherits from \code{dfr_dist}, an object
+that passes \code{is_dfr_dist_series()} will also pass
+\code{\link[dfr.dist]{is_dfr_dist}()}. Use this function when you need to
+distinguish series systems from ordinary \code{dfr_dist} objects.
+}
+\examples{
+\donttest{
+library(dfr.dist)
+
+sys <- dfr_dist_series(list(
+    dfr_exponential(0.1),
+    dfr_exponential(0.2)
+))
+is_dfr_dist_series(sys)  # TRUE
+is_dfr_dist(sys)         # also TRUE (inherits dfr_dist)
+
+single <- dfr_exponential(0.5)
+is_dfr_dist_series(single)  # FALSE
+is_dfr_dist(single)         # TRUE
+
+is_dfr_dist_series(42)  # FALSE
+}
+
+}
+\seealso{
+\code{\link{dfr_dist_series}} for the constructor,
+\code{\link[dfr.dist]{is_dfr_dist}} for the parent class predicate
+
+Other series system: 
+\code{\link{assumptions.dfr_dist_series}()},
+\code{\link{dfr_dist_series}()},
+\code{\link{print.dfr_dist_series}()}
+}
+\concept{series system}

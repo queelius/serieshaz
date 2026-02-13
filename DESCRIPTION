@@ -10,6 +10,9 @@ Description: Compose multiple dynamic failure rate (DFR) distributions into
     (hazard, survival, CDF, density, sampling, MLE fitting) work
     automatically.
 License: GPL (>= 3)
+URL: https://github.com/queelius/dfr.dist.series,
+    https://queelius.github.io/dfr.dist.series/
+BugReports: https://github.com/queelius/dfr.dist.series/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
@@ -24,6 +27,7 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Remotes:
     github::queelius/algebraic.dist,
