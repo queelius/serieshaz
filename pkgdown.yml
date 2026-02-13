@@ -1,0 +1,12 @@
+pandoc: 3.1.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  series-advanced: series-advanced.html
+  series-fitting: series-fitting.html
+  series-math: series-math.html
+  series-overview: series-overview.html
+last_built: 2026-02-13T12:01Z
+urls:
+  reference: https://queelius.github.io/dfr.dist.series/reference
+  article: https://queelius.github.io/dfr.dist.series/articles

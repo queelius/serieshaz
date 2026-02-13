@@ -1,0 +1,278 @@
+# Advanced Series System Composition
+
+## Mixed Component Types
+
+Real systems often have failure modes with different aging
+characteristics. Consider a server with:
+
+- **Hard disk** — Weibull wear-out (increasing hazard)
+- **Memory** — exponential random failures (constant hazard)
+- **Power supply** — Gompertz degradation (accelerating hazard)
+
+``` r
+library(dfr.dist.series)
+
+disk <- dfr_weibull(shape = 2, scale = 500)
+mem  <- dfr_exponential(0.001)
+psu  <- dfr_gompertz(a = 0.0001, b = 0.02)
+
+server <- dfr_dist_series(list(disk, mem, psu))
+```
+
+### Hazard Decomposition
+
+Each component contributes differently to system risk over time:
+
+``` r
+h_disk <- component_hazard(server, 1)
+h_mem  <- component_hazard(server, 2)
+h_psu  <- component_hazard(server, 3)
+h_sys  <- hazard(server)
+
+t_grid <- seq(10, 300, by = 10)
+cat("Time | Disk     | Memory   | PSU      | System\n")
+#> Time | Disk     | Memory   | PSU      | System
+cat("-----|----------|----------|----------|--------\n")
+#> -----|----------|----------|----------|--------
+for (t0 in c(50, 100, 150, 200, 250)) {
+    cat(sprintf("%4d | %.6f | %.6f | %.6f | %.6f\n",
+                t0, h_disk(t0), h_mem(t0), h_psu(t0), h_sys(t0)))
+}
+#>   50 | 0.000400 | 0.001000 | 0.000272 | 0.001672
+#>  100 | 0.000800 | 0.001000 | 0.000739 | 0.002539
+#>  150 | 0.001200 | 0.001000 | 0.002009 | 0.004209
+#>  200 | 0.001600 | 0.001000 | 0.005460 | 0.008060
+#>  250 | 0.002000 | 0.001000 | 0.014841 | 0.017841
+```
+
+The memory’s constant hazard ($0.001$) dominates at early times when the
+Weibull and Gompertz hazards are still small. By $t = 200$, the
+Weibull’s increasing hazard ($\propto t$) and the Gompertz’s
+accelerating hazard ($\propto e^{bt}$) have overtaken memory as the
+primary risk drivers. This crossover is characteristic of mixed-type
+series systems.
+
+## Nested Series Systems
+
+Since a `dfr_dist_series` is itself a `dfr_dist`, it can be used as a
+component in another series system. This enables hierarchical modeling.
+
+### Example: Subsystem Composition
+
+``` r
+# CPU subsystem: two exponential failure modes
+cpu <- dfr_dist_series(list(
+    dfr_exponential(0.001),  # thermal failure
+    dfr_exponential(0.0005)  # electrical failure
+))
+
+# Storage subsystem: Weibull wear + exponential shock
+storage <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 1000),
+    dfr_exponential(0.0002)
+))
+
+# Full system: CPU + storage + power supply
+full <- dfr_dist_series(list(
+    cpu,
+    storage,
+    dfr_gompertz(a = 0.0001, b = 0.01)
+))
+
+cat("Full system components:", ncomponents(full), "\n")
+#> Full system components: 3
+cat("Total parameters:", length(params(full)), "\n")
+#> Total parameters: 7
+```
+
+### Verifying Nested Hazard
+
+The nested system’s hazard should equal the sum of all leaf-component
+hazards:
+
+``` r
+h_full <- hazard(full)
+
+# Manually sum all leaf hazards
+h_cpu1 <- component_hazard(cpu, 1)
+h_cpu2 <- component_hazard(cpu, 2)
+h_stor1 <- component_hazard(storage, 1)
+h_stor2 <- component_hazard(storage, 2)
+h_psu <- component_hazard(full, 3)
+
+t0 <- 100
+nested_sum <- h_cpu1(t0) + h_cpu2(t0) + h_stor1(t0) + h_stor2(t0) + h_psu(t0)
+system_h <- h_full(t0)
+
+cat(sprintf("Sum of leaf hazards: %.8f\n", nested_sum))
+#> Sum of leaf hazards: 0.00217183
+cat(sprintf("System hazard:       %.8f\n", system_h))
+#> System hazard:       0.00217183
+cat(sprintf("Difference:          %.2e\n", abs(nested_sum - system_h)))
+#> Difference:          4.34e-19
+```
+
+## Custom Components
+
+The
+[`dfr_dist()`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html)
+constructor lets you define components with arbitrary hazard functions.
+These can be used in series systems alongside the built-in
+distributions.
+
+### Bathtub Curve Component
+
+A bathtub-shaped hazard (high early, low middle, high late) can model
+products with infant mortality and wear-out:
+
+``` r
+# Bathtub: h(t) = a/t^b + c*t^d  (infant mortality + wear-out)
+bathtub <- dfr_dist(
+    rate = function(t, par, ...) {
+        a <- par[1]; b <- par[2]; c <- par[3]; d <- par[4]
+        a * t^(-b) + c * t^d
+    },
+    par = c(0.5, 0.5, 0.0001, 2)
+)
+
+# Series system with bathtub + exponential random shock
+sys <- dfr_dist_series(list(bathtub, dfr_exponential(0.001)))
+
+h_sys <- hazard(sys)
+for (t0 in c(1, 10, 50, 100, 200)) {
+    cat(sprintf("t=%3d: h_sys = %.6f\n", t0, h_sys(t0)))
+}
+#> t=  1: h_sys = 0.501100
+#> t= 10: h_sys = 0.169114
+#> t= 50: h_sys = 0.321711
+#> t=100: h_sys = 1.051000
+#> t=200: h_sys = 4.036355
+```
+
+The bathtub shape is visible: high hazard at $t = 1$ (infant mortality
+term $a/t^{b}$), a minimum around $t = 10\text{–}50$, then rising again
+at $t = 200$ (wear-out term $c \cdot t^{d}$). The constant exponential
+shock adds a baseline floor throughout.
+
+### Effect on Cumulative Hazard
+
+When a custom component doesn’t provide `cum_haz_rate`, the series
+system falls back to numerical integration:
+
+``` r
+cat("Analytical cum_haz available:", !is.null(sys$cum_haz_rate), "\n")
+#> Analytical cum_haz available: FALSE
+
+# The system still computes survival correctly via numerical integration
+S <- surv(sys)
+for (t0 in c(10, 50, 100)) {
+    cat(sprintf("t=%3d: S(t) = %.6f\n", t0, S(t0)))
+}
+#> t= 10: S(t) = 0.040534
+#> t= 50: S(t) = 0.000013
+#> t=100: S(t) = 0.000000
+```
+
+## Failure Attribution
+
+[`sample_components()`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+generates component-level lifetimes, enabling identification of which
+component caused each system failure.
+
+``` r
+server <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 200),     # mechanical wear
+    dfr_exponential(0.005),            # random shock
+    dfr_gompertz(a = 0.0001, b = 0.02)       # degradation
+))
+
+set.seed(42)
+n <- 10000
+mat <- sample_components(server, n = n)
+
+# System lifetime = minimum across components
+t_sys <- apply(mat, 1, min)
+
+# Identify the failing component for each observation
+failing <- apply(mat, 1, which.min)
+```
+
+### Attribution Proportions
+
+``` r
+props <- table(failing) / n
+names(props) <- c("Weibull (wear)", "Exp (shock)", "Gompertz (degrad.)")
+cat("Failure attribution:\n")
+#> Failure attribution:
+print(round(props, 3))
+#>     Weibull (wear)        Exp (shock) Gompertz (degrad.) 
+#>              0.376              0.512              0.112
+```
+
+### Attribution by Time Window
+
+Failure causes change over the system’s lifetime:
+
+``` r
+# Split into early, middle, and late failures
+breaks <- quantile(t_sys, probs = c(0, 1/3, 2/3, 1))
+period <- cut(t_sys, breaks = breaks, labels = c("Early", "Middle", "Late"),
+              include.lowest = TRUE)
+
+cat("\nAttribution by time period:\n")
+#> 
+#> Attribution by time period:
+for (p in levels(period)) {
+    idx <- which(period == p)
+    props_p <- table(factor(failing[idx], levels = 1:3)) / length(idx)
+    cat(sprintf("  %s (n=%d): Wear=%.1f%% Shock=%.1f%% Degrad=%.1f%%\n",
+                p, length(idx),
+                100 * props_p[1], 100 * props_p[2], 100 * props_p[3]))
+}
+#>   Early (n=3334): Wear=20.8% Shock=75.9% Degrad=3.2%
+#>   Middle (n=3333): Wear=44.7% Shock=48.9% Degrad=6.3%
+#>   Late (n=3333): Wear=47.3% Shock=28.7% Degrad=24.0%
+```
+
+## Parameter Sensitivity
+
+The parameter layout enables systematic sensitivity analysis: vary one
+component’s parameters while holding others fixed.
+
+``` r
+server <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.01)
+))
+
+S_fn <- surv(server)
+base_par <- params(server)  # c(2, 100, 0.01)
+t0 <- 50
+
+cat("Sensitivity of S(50) to Weibull scale parameter:\n")
+#> Sensitivity of S(50) to Weibull scale parameter:
+for (scale_val in c(50, 75, 100, 125, 150)) {
+    par_mod <- base_par
+    par_mod[2] <- scale_val  # layout tells us par[2] is Weibull scale
+    cat(sprintf("  scale = %3d: S(50) = %.4f\n", scale_val, S_fn(t0, par = par_mod)))
+}
+#>   scale =  50: S(50) = 0.2231
+#>   scale =  75: S(50) = 0.3889
+#>   scale = 100: S(50) = 0.4724
+#>   scale = 125: S(50) = 0.5169
+#>   scale = 150: S(50) = 0.5427
+
+cat("\nSensitivity of S(50) to exponential rate:\n")
+#> 
+#> Sensitivity of S(50) to exponential rate:
+for (rate_val in c(0.005, 0.01, 0.02, 0.05, 0.1)) {
+    par_mod <- base_par
+    par_mod[3] <- rate_val  # layout tells us par[3] is exp rate
+    cat(sprintf("  rate = %.3f: S(50) = %.4f\n", rate_val, S_fn(t0, par = par_mod)))
+}
+#>   rate = 0.005: S(50) = 0.6065
+#>   rate = 0.010: S(50) = 0.4724
+#>   rate = 0.020: S(50) = 0.2865
+#>   rate = 0.050: S(50) = 0.0639
+#>   rate = 0.100: S(50) = 0.0052
+```
