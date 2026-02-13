@@ -374,11 +374,14 @@ cat("Fitted (uncensored):", round(coef(result), 4), "\n")
 #> Fitted (uncensored): 2.4743 109.1372 0.0121
 ```
 
-With censoring, we lose information about what would have happened after
-$t = 80$, which primarily affects the Weibull shape estimate (shape
-governs late-life behavior). Still, the MLE correctly accounts for the
-censoring mechanism and recovers parameters reasonably well. Larger
-sample sizes or lower censoring proportions improve precision.
+Both the censored and uncensored fits recover parameters in the right
+ballpark. With finite samples, the MLE is a random variable — different
+random seeds and censoring patterns can shift estimates in either
+direction. The censored fit uses less information (observations after
+$t = 80$ are truncated), but the MLE correctly accounts for this through
+the censored likelihood contribution $S\left( t_{i} \right)$. In
+general, heavier censoring increases standard errors, but does not
+introduce systematic bias.
 
 ## Model Diagnostics
 

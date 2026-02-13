@@ -108,17 +108,29 @@ hazard)</li>
 <span><span class="co">#&gt;  150 | 0.001200 | 0.001000 | 0.002009 | 0.004209</span></span>
 <span><span class="co">#&gt;  200 | 0.001600 | 0.001000 | 0.005460 | 0.008060</span></span>
 <span><span class="co">#&gt;  250 | 0.002000 | 0.001000 | 0.014841 | 0.017841</span></span></code></pre></div>
-<p>The memory’s constant hazard
+<p>At
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>50</mn></mrow><annotation encoding="application/x-tex">t = 50</annotation></semantics></math>,
+the constant memory hazard
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.001</mn><annotation encoding="application/x-tex">0.001</annotation></semantics></math>)
-dominates at early times when the Weibull and Gompertz hazards are still
-small. By
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">t = 200</annotation></semantics></math>,
-the Weibull’s increasing hazard
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∝</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">\propto t</annotation></semantics></math>)
-and the Gompertz’s accelerating hazard
+is the largest contributor — the Weibull
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.0004</mn><annotation encoding="application/x-tex">0.0004</annotation></semantics></math>)
+and Gompertz
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.0003</mn><annotation encoding="application/x-tex">0.0003</annotation></semantics></math>)
+are still small. Memory remains dominant through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">t = 100</annotation></semantics></math>,
+but the Gompertz’s exponential acceleration
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∝</mo><msup><mi>e</mi><mrow><mi>b</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">\propto e^{bt}</annotation></semantics></math>)
-have overtaken memory as the primary risk drivers. This crossover is
-characteristic of mixed-type series systems.</p>
+overtakes it by around
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>125</mn><mtext mathvariant="normal">–</mtext><mn>150</mn></mrow><annotation encoding="application/x-tex">t = 125\text{--}150</annotation></semantics></math>.
+By
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>250</mn></mrow><annotation encoding="application/x-tex">t = 250</annotation></semantics></math>,
+the Gompertz contributes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.015</mn><annotation encoding="application/x-tex">0.015</annotation></semantics></math>
+vs memory’s constant
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.001</mn><annotation encoding="application/x-tex">0.001</annotation></semantics></math>,
+dominating system risk. This crossover pattern is characteristic of
+mixed-type series systems: each failure mode has its “era” of
+dominance.</p>
 </div>
 </div>
 <div class="section level2">
@@ -217,15 +229,24 @@ products with infant mortality and wear-out:</p>
 <span><span class="co">#&gt; t=200: h_sys = 4.036355</span></span></code></pre></div>
 <p>The bathtub shape is visible: high hazard at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">t = 1</annotation></semantics></math>
-(infant mortality term
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>0.50</mn></mrow><annotation encoding="application/x-tex">\approx 0.50</annotation></semantics></math>,
+dominated by the infant mortality term
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mi>/</mi><msup><mi>t</mi><mi>b</mi></msup></mrow><annotation encoding="application/x-tex">a/t^b</annotation></semantics></math>),
-a minimum around
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>10</mn><mtext mathvariant="normal">–</mtext><mn>50</mn></mrow><annotation encoding="application/x-tex">t = 10\text{--}50</annotation></semantics></math>,
-then rising again at
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">t = 200</annotation></semantics></math>
-(wear-out term
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>⋅</mo><msup><mi>t</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">c \cdot t^d</annotation></semantics></math>).
-The constant exponential shock adds a baseline floor throughout.</p>
+dropping to a minimum at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">t = 10</annotation></semantics></math>
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>0.17</mn></mrow><annotation encoding="application/x-tex">\approx 0.17</annotation></semantics></math>),
+then rising steeply as the wear-out term
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo>⋅</mo><msup><mi>t</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">c \cdot t^d</annotation></semantics></math>
+kicks in
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>1.05</mn></mrow><annotation encoding="application/x-tex">\approx 1.05</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>100</mn></mrow><annotation encoding="application/x-tex">t = 100</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>4.04</mn></mrow><annotation encoding="application/x-tex">\approx 4.04</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">t = 200</annotation></semantics></math>).
+The constant exponential shock
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.001</mn><annotation encoding="application/x-tex">0.001</annotation></semantics></math>)
+adds a negligible baseline floor.</p>
 </div>
 <div class="section level3">
 <h3 id="effect-on-cumulative-hazard">Effect on Cumulative Hazard<a class="anchor" aria-label="anchor" href="#effect-on-cumulative-hazard"></a>
@@ -244,6 +265,15 @@ the series system falls back to numerical integration:</p>
 <span><span class="co">#&gt; t= 10: S(t) = 0.040534</span></span>
 <span><span class="co">#&gt; t= 50: S(t) = 0.000013</span></span>
 <span><span class="co">#&gt; t=100: S(t) = 0.000000</span></span></code></pre></div>
+<p>With this bathtub parameterization, the high infant mortality
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">a = 0.5</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">b = 0.5</annotation></semantics></math>)
+drives the cumulative hazard so high that survival drops below 5% by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">t = 10</annotation></semantics></math>.
+In practice, you would calibrate the bathtub parameters to match
+observed failure patterns. The numerical integration fallback handles
+these steep hazard functions correctly, just more slowly than the
+analytical path.</p>
 </div>
 </div>
 <div class="section level2">

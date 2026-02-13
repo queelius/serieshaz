@@ -127,90 +127,39 @@ ll(df)
 
 ### Fitting (MLE)
 
+Fitting a 5-parameter model (Weibull + exponential + Gompertz) from
+system-level data alone is challenging — the components’ hazard
+contributions overlap, making individual parameters hard to identify.
+For a cleaner demonstration, we fit a simpler 2-component model:
+
 ``` r
-# Generate data from the true system
-set.seed(123)
-true_times <- samp(200)
-train <- data.frame(t = true_times, delta = rep(1L, 200))
+# Simpler 2-component model for a clean fit demo
+fit_model <- dfr_dist_series(list(
+    dfr_weibull(shape = 2, scale = 100),
+    dfr_exponential(0.01)
+))
+true_par <- c(2, 100, 0.01)
 
-# Fit model to data
-solver <- fit(server)
-result <- solver(train, par = c(1.5, 400, 0.002, 0.001, 0.01))
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
-#> Warning in log(h_exact): NaNs produced
+set.seed(42)
+fit_samp <- sampler(fit_model)
+train <- data.frame(t = fit_samp(500), delta = rep(1L, 500))
 
-cat("True parameters:  ", params(server), "\n")
-#> True parameters:   2 500 0.001 1e-04 0.02
-cat("Fitted parameters:", coef(result), "\n")
-#> Fitted parameters: 0.9702918 400.0219 -0.002691504 0.0005719317 0.01421602
+solver <- fit(fit_model)
+result <- suppressWarnings(solver(train, par = c(1.5, 80, 0.02)))
+
+cat("True parameters:  ", true_par, "\n")
+#> True parameters:   2 100 0.01
+cat("Fitted parameters:", round(coef(result), 3), "\n")
+#> Fitted parameters: 2.494 112.753 0.013
 ```
 
-The MLE recovers the true parameters reasonably well from 200
-observations. The Weibull shape and scale are the most precisely
-estimated because the disk’s increasing hazard gives the likelihood a
-distinctive shape. The Gompertz parameters are harder to pin down
-because its contribution is small at early times.
+With 500 observations and a mixed-type model (Weibull + exponential),
+the MLE recovers the parameters reasonably well. The Weibull’s
+increasing hazard shape is distinguishable from the exponential’s
+constant hazard, making this system identifiable. See
+[`vignette("series-fitting")`](https://queelius.github.io/dfr.dist.series/articles/series-fitting.md)
+for a thorough treatment of identifiability, censoring, and model
+selection.
 
 ## System Introspection
 
@@ -252,11 +201,13 @@ cat(sprintf("Sum:    %.6f (matches system)\n", sum(hazards)))
 #> Sum:    0.008060 (matches system)
 ```
 
-At $t = 200$, the PSU’s Gompertz degradation and the disk’s Weibull
-wear-out dominate system risk, while the memory’s constant exponential
-hazard contributes a smaller share. This decomposition is the key
-advantage of series system modeling: it reveals *which* failure mode
-drives system risk at any given age.
+At $t = 200$, the PSU’s Gompertz degradation dominates system risk
+(~68%), with the disk’s Weibull wear-out contributing ~20% and the
+memory’s constant exponential hazard only ~12%. This decomposition is
+the key advantage of series system modeling: it reveals *which* failure
+mode drives system risk at any given age. Early on, the constant memory
+hazard is the largest contributor, but the accelerating Gompertz term
+overtakes it by around $t = 150$.
 
 ### Failure Attribution via Sampling
 

@@ -460,13 +460,16 @@ failing (right-censoring). The MLE correctly accounts for this.</p>
 <span><span class="co">#&gt; Fitted (censored):   1.9106 105.7704 0.011</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Fitted (uncensored):"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fitted (uncensored): 2.4743 109.1372 0.0121</span></span></code></pre></div>
-<p>With censoring, we lose information about what would have happened
-after
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>80</mn></mrow><annotation encoding="application/x-tex">t = 80</annotation></semantics></math>,
-which primarily affects the Weibull shape estimate (shape governs
-late-life behavior). Still, the MLE correctly accounts for the censoring
-mechanism and recovers parameters reasonably well. Larger sample sizes
-or lower censoring proportions improve precision.</p>
+<p>Both the censored and uncensored fits recover parameters in the right
+ballpark. With finite samples, the MLE is a random variable — different
+random seeds and censoring patterns can shift estimates in either
+direction. The censored fit uses less information (observations after
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>80</mn></mrow><annotation encoding="application/x-tex">t = 80</annotation></semantics></math>
+are truncated), but the MLE correctly accounts for this through the
+censored likelihood contribution
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">S(t_i)</annotation></semantics></math>.
+In general, heavier censoring increases standard errors, but does not
+introduce systematic bias.</p>
 </div>
 <div class="section level2">
 <h2 id="model-diagnostics">Model Diagnostics<a class="anchor" aria-label="anchor" href="#model-diagnostics"></a>

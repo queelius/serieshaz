@@ -280,20 +280,35 @@ for right-censored observations.</p>
 <span></span>
 <span><span class="co"># Log-likelihood at true parameters</span></span>
 <span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/likelihood.model/reference/loglik.html" class="external-link">loglik</a></span><span class="op">(</span><span class="va">sys</span><span class="op">)</span></span>
-<span><span class="fu">ll</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] -128.9726</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Log-lik at true params:"</span>, <span class="fu">ll</span><span class="op">(</span><span class="va">df</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Log-lik at true params: -128.9726</span></span>
 <span></span>
-<span><span class="co"># Score (gradient of log-likelihood) — near zero at true params</span></span>
+<span><span class="co"># Score at TRUE params (generally nonzero with finite n)</span></span>
 <span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/likelihood.model/reference/score.html" class="external-link">score</a></span><span class="op">(</span><span class="va">sys</span><span class="op">)</span></span>
-<span><span class="va">score_val</span> <span class="op">&lt;-</span> <span class="fu">sc</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Score at true params:"</span>, <span class="va">score_val</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Score at true params:"</span>, <span class="fu">sc</span><span class="op">(</span><span class="va">df</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Score at true params: -62.57988 -62.57988</span></span>
 <span></span>
-<span><span class="co"># Hessian (second derivatives) — negative definite at MLE</span></span>
+<span><span class="co"># Fit to find the MLE, then evaluate score there</span></span>
+<span><span class="va">solver</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">sys</span><span class="op">)</span></span>
+<span><span class="va">mle</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">solver</span><span class="op">(</span><span class="va">df</span>, par <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLE:"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mle</span><span class="op">)</span>, <span class="st">"(sum:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mle</span><span class="op">)</span><span class="op">)</span>, <span class="st">")\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; MLE: 0.05905292 0.1590529 (sum: 0.2181058 )</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Score at MLE:"</span>, <span class="fu">sc</span><span class="op">(</span><span class="va">df</span>, par <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mle</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Score at MLE: -2.903142e-05 -2.90364e-05</span></span>
+<span></span>
+<span><span class="co"># Hessian at MLE — eigenvalues should be negative (negative definite)</span></span>
 <span><span class="va">H</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/likelihood.model/reference/hess_loglik.html" class="external-link">hess_loglik</a></span><span class="op">(</span><span class="va">sys</span><span class="op">)</span></span>
-<span><span class="va">hess_val</span> <span class="op">&lt;-</span> <span class="fu">H</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="va">hess_val</span> <span class="op">&lt;-</span> <span class="fu">H</span><span class="op">(</span><span class="va">df</span>, par <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mle</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Hessian eigenvalues:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">hess_val</span>, symmetric <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Hessian eigenvalues: -2.552025e-08 -1111.111</span></span></code></pre></div>
+<span><span class="co">#&gt; Hessian eigenvalues: -6.62385e-09 -2102.159</span></span></code></pre></div>
+<p>Note the distinction: the score at the <em>true</em> parameters is
+generally nonzero with finite data (the sample deviates from the
+population). At the <em>MLE</em>, the score is approximately zero by
+definition — it’s the first-order optimality condition. The Hessian’s
+negative eigenvalues confirm the MLE is a local maximum. For exponential
+series, only the sum of rates is identifiable, so individual MLE values
+may differ from the true rates even with large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>.</p>
 <div class="section level3">
 <h3 id="numerical-verification">Numerical Verification<a class="anchor" aria-label="anchor" href="#numerical-verification"></a>
 </h3>

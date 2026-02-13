@@ -200,88 +200,35 @@ surviving to that point.</p>
 <div class="section level3">
 <h3 id="fitting-mle">Fitting (MLE)<a class="anchor" aria-label="anchor" href="#fitting-mle"></a>
 </h3>
+<p>Fitting a 5-parameter model (Weibull + exponential + Gompertz) from
+system-level data alone is challenging — the components’ hazard
+contributions overlap, making individual parameters hard to identify.
+For a cleaner demonstration, we fit a simpler 2-component model:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Generate data from the true system</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
-<span><span class="va">true_times</span> <span class="op">&lt;-</span> <span class="fu">samp</span><span class="op">(</span><span class="fl">200</span><span class="op">)</span></span>
-<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>t <span class="op">=</span> <span class="va">true_times</span>, delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">200</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Simpler 2-component model for a clean fit demo</span></span>
+<span><span class="va">fit_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dfr_dist_series.html">dfr_dist_series</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">true_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">100</span>, <span class="fl">0.01</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Fit model to data</span></span>
-<span><span class="va">solver</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">server</span><span class="op">)</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">solver</span><span class="op">(</span><span class="va">train</span>, par <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">400</span>, <span class="fl">0.002</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(h_exact): NaNs produced</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">fit_samp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/algebraic.dist/reference/sampler.html" class="external-link">sampler</a></span><span class="op">(</span><span class="va">fit_model</span><span class="op">)</span></span>
+<span><span class="va">train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fu">fit_samp</span><span class="op">(</span><span class="fl">500</span><span class="op">)</span>, delta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"True parameters:  "</span>, <span class="fu"><a href="https://queelius.github.io/algebraic.dist/reference/params.html" class="external-link">params</a></span><span class="op">(</span><span class="va">server</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; True parameters:   2 500 0.001 1e-04 0.02</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Fitted parameters:"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fitted parameters: 0.9702918 400.0219 -0.002691504 0.0005719317 0.01421602</span></span></code></pre></div>
-<p>The MLE recovers the true parameters reasonably well from 200
-observations. The Weibull shape and scale are the most precisely
-estimated because the disk’s increasing hazard gives the likelihood a
-distinctive shape. The Gompertz parameters are harder to pin down
-because its contribution is small at early times.</p>
+<span><span class="va">solver</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">fit_model</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span><span class="fu">solver</span><span class="op">(</span><span class="va">train</span>, par <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="fl">80</span>, <span class="fl">0.02</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"True parameters:  "</span>, <span class="va">true_par</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; True parameters:   2 100 0.01</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Fitted parameters:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Fitted parameters: 2.494 112.753 0.013</span></span></code></pre></div>
+<p>With 500 observations and a mixed-type model (Weibull + exponential),
+the MLE recovers the parameters reasonably well. The Weibull’s
+increasing hazard shape is distinguishable from the exponential’s
+constant hazard, making this system identifiable. See
+<code><a href="../articles/series-fitting.html">vignette("series-fitting")</a></code> for a thorough treatment of
+identifiability, censoring, and model selection.</p>
 </div>
 </div>
 <div class="section level2">
@@ -325,11 +272,14 @@ systems.</p>
 <span><span class="co">#&gt; Sum:    0.008060 (matches system)</span></span></code></pre></div>
 <p>At
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>200</mn></mrow><annotation encoding="application/x-tex">t = 200</annotation></semantics></math>,
-the PSU’s Gompertz degradation and the disk’s Weibull wear-out dominate
-system risk, while the memory’s constant exponential hazard contributes
-a smaller share. This decomposition is the key advantage of series
-system modeling: it reveals <em>which</em> failure mode drives system
-risk at any given age.</p>
+the PSU’s Gompertz degradation dominates system risk (~68%), with the
+disk’s Weibull wear-out contributing ~20% and the memory’s constant
+exponential hazard only ~12%. This decomposition is the key advantage of
+series system modeling: it reveals <em>which</em> failure mode drives
+system risk at any given age. Early on, the constant memory hazard is
+the largest contributor, but the accelerating Gompertz term overtakes it
+by around
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>=</mo><mn>150</mn></mrow><annotation encoding="application/x-tex">t = 150</annotation></semantics></math>.</p>
 </div>
 <div class="section level3">
 <h3 id="failure-attribution-via-sampling">Failure Attribution via Sampling<a class="anchor" aria-label="anchor" href="#failure-attribution-via-sampling"></a>

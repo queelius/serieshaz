@@ -224,21 +224,36 @@ df <- data.frame(t = times, delta = rep(1L, 50))
 
 # Log-likelihood at true parameters
 ll <- loglik(sys)
-ll(df)
-#> [1] -128.9726
+cat("Log-lik at true params:", ll(df), "\n")
+#> Log-lik at true params: -128.9726
 
-# Score (gradient of log-likelihood) — near zero at true params
+# Score at TRUE params (generally nonzero with finite n)
 sc <- score(sys)
-score_val <- sc(df)
-cat("Score at true params:", score_val, "\n")
+cat("Score at true params:", sc(df), "\n")
 #> Score at true params: -62.57988 -62.57988
 
-# Hessian (second derivatives) — negative definite at MLE
+# Fit to find the MLE, then evaluate score there
+solver <- fit(sys)
+mle <- suppressWarnings(solver(df, par = c(0.15, 0.25)))
+cat("MLE:", coef(mle), "(sum:", sum(coef(mle)), ")\n")
+#> MLE: 0.05905292 0.1590529 (sum: 0.2181058 )
+cat("Score at MLE:", sc(df, par = coef(mle)), "\n")
+#> Score at MLE: -2.903142e-05 -2.90364e-05
+
+# Hessian at MLE — eigenvalues should be negative (negative definite)
 H <- hess_loglik(sys)
-hess_val <- H(df)
+hess_val <- H(df, par = coef(mle))
 cat("Hessian eigenvalues:", eigen(hess_val, symmetric = TRUE)$values, "\n")
-#> Hessian eigenvalues: -2.552025e-08 -1111.111
+#> Hessian eigenvalues: -6.62385e-09 -2102.159
 ```
+
+Note the distinction: the score at the *true* parameters is generally
+nonzero with finite data (the sample deviates from the population). At
+the *MLE*, the score is approximately zero by definition — it’s the
+first-order optimality condition. The Hessian’s negative eigenvalues
+confirm the MLE is a local maximum. For exponential series, only the sum
+of rates is identifiable, so individual MLE values may differ from the
+true rates even with large $n$.
 
 ### Numerical Verification
 
