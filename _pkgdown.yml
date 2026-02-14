@@ -1,4 +1,4 @@
-url: https://queelius.github.io/dfr.dist.series/
+url: https://queelius.github.io/serieshaz/
 
 template:
   bootstrap: 5
@@ -13,7 +13,7 @@ navbar:
       href: articles/series-overview.html
     github:
       icon: fa-github
-      href: https://github.com/queelius/dfr.dist.series
+      href: https://github.com/queelius/serieshaz
 
 reference:
   - title: "Series System Constructor"

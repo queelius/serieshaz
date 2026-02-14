@@ -1,6 +1,6 @@
-# Test fixtures for dfr.dist.series
+# Test fixtures for serieshaz
 
-library(dfr.dist)
+library(flexhaz)
 
 # ---- Series system fixtures ----
 

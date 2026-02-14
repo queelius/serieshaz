@@ -27,7 +27,7 @@ Real systems often have failure modes with different aging characteristics. Cons
 - **Power supply** — Gompertz degradation (accelerating hazard)
 
 ```{r mixed-types}
-library(dfr.dist.series)
+library(serieshaz)
 
 disk <- dfr_weibull(shape = 2, scale = 500)
 mem  <- dfr_exponential(0.001)

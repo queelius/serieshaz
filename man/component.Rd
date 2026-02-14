@@ -17,11 +17,11 @@ component(x, j, ...)
 \item{...}{Additional arguments passed to methods.}
 }
 \value{
-A \code{\link[dfr.dist]{dfr_dist}} object for component \code{j}.
+A \code{\link[flexhaz]{dfr_dist}} object for component \code{j}.
 }
 \description{
 Extracts component \code{j} from a series system as a standalone
-\code{\link[dfr.dist]{dfr_dist}} object, with its parameters set to the
+\code{\link[flexhaz]{dfr_dist}} object, with its parameters set to the
 current values from the system's parameter vector (via the layout).
 }
 \details{
@@ -47,7 +47,7 @@ with its current parameters from the series system's parameter vector.
 }}
 \examples{
 \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100),

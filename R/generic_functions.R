@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_exponential(0.1),
@@ -37,13 +37,13 @@ ncomponents <- function(x, ...) {
 #' Extract a component from a system
 #'
 #' Extracts component \code{j} from a series system as a standalone
-#' \code{\link[dfr.dist]{dfr_dist}} object, with its parameters set to the
+#' \code{\link[flexhaz]{dfr_dist}} object, with its parameters set to the
 #' current values from the system's parameter vector (via the layout).
 #'
 #' @param x A system object (e.g., \code{\link{dfr_dist_series}}).
 #' @param j Component index (integer, \code{1 <= j <= ncomponents(x)}).
 #' @param ... Additional arguments passed to methods.
-#' @return A \code{\link[dfr.dist]{dfr_dist}} object for component \code{j}.
+#' @return A \code{\link[flexhaz]{dfr_dist}} object for component \code{j}.
 #'
 #' @details
 #' The returned component object is a copy of the original component with its
@@ -62,7 +62,7 @@ ncomponents <- function(x, ...) {
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_weibull(shape = 2, scale = 100),
@@ -120,7 +120,7 @@ component <- function(x, j, ...) {
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_weibull(shape = 2, scale = 100),
@@ -166,7 +166,7 @@ param_layout <- function(x, ...) {
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_exponential(0.1),
@@ -226,7 +226,7 @@ component_hazard <- function(x, j, ...) {
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_exponential(0.1),

@@ -1,4 +1,4 @@
 library(testthat)
-library(dfr.dist.series)
+library(serieshaz)
 
-test_check("dfr.dist.series")
+test_check("serieshaz")

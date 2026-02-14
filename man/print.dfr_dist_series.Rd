@@ -31,7 +31,7 @@ parameter values (or "unknown" if parameters are \code{NULL})
 }
 \examples{
 \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),

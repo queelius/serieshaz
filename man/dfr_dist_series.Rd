@@ -63,7 +63,7 @@ hazards.
 }
 \examples{
 \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 # --- Basic exponential series ---
 # Three exponential components -> equivalent to single exponential
@@ -113,7 +113,7 @@ solver <- fit(sys)
 \code{\link{param_layout}} for parameter index mapping,
 \code{\link{component_hazard}} for per-component hazard closures,
 \code{\link{sample_components}} for sampling component lifetimes,
-\code{\link[dfr.dist]{dfr_dist}} for the parent class constructor,
+\code{\link[flexhaz]{dfr_dist}} for the parent class constructor,
 \code{\link[algebraic.dist]{hazard}} for distribution generics
 
 Other series system: 

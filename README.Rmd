@@ -13,14 +13,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-# dfr.dist.series
+# serieshaz
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 Series System Distributions from Dynamic Failure Rate Components
 
-**dfr.dist.series** composes multiple `dfr_dist` objects into a series system distribution. A series system fails when *any* component fails, so the system hazard is the sum of component hazards:
+**serieshaz** composes multiple `dfr_dist` objects into a series system distribution. A series system fails when *any* component fails, so the system hazard is the sum of component hazards:
 
 $$h_{sys}(t) = \sum_{j=1}^{m} h_j(t, \theta_j)$$
 
@@ -32,13 +32,13 @@ Install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("queelius/dfr.dist.series")
+install.packages("serieshaz", repos = "https://queelius.r-universe.dev")
 ```
 
 ## Quick Start
 
 ```{r quick-start}
-library(dfr.dist.series)
+library(serieshaz)
 
 # Three-component server with different failure modes
 server <- dfr_dist_series(list(
@@ -82,11 +82,11 @@ for (j in 1:ncomponents(server)) {
 
 ## Ecosystem
 
-dfr.dist.series builds on:
+serieshaz builds on:
 
 - [algebraic.dist](https://github.com/queelius/algebraic.dist) — Base distribution generics
 - [likelihood.model](https://github.com/queelius/likelihood.model) — Statistical inference generics
-- [dfr.dist](https://github.com/queelius/dfr.dist) — Dynamic failure rate distributions
+- [flexhaz](https://github.com/queelius/flexhaz) — Dynamic failure rate distributions
 
 ## Documentation
 

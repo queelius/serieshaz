@@ -48,7 +48,7 @@ components.
 }}
 \examples{
 \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100),

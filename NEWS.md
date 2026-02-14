@@ -1,4 +1,4 @@
-# dfr.dist.series 0.1.0
+# serieshaz 0.1.0
 
 Initial release.
 

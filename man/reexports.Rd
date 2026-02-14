@@ -30,7 +30,7 @@ below to see their documentation.
 \describe{
   \item{algebraic.dist}{\code{\link[algebraic.dist]{cdf}}, \code{\link[algebraic.dist]{hazard}}, \code{\link[algebraic.dist]{inv_cdf}}, \code{\link[algebraic.dist]{params}}, \code{\link[algebraic.dist]{sampler}}, \code{\link[algebraic.dist]{surv}}}
 
-  \item{dfr.dist}{\code{\link[dfr.dist]{cum_haz}}, \code{\link[dfr.dist]{dfr_dist}}, \code{\link[dfr.dist]{dfr_exponential}}, \code{\link[dfr.dist]{dfr_gompertz}}, \code{\link[dfr.dist]{dfr_loglogistic}}, \code{\link[dfr.dist]{dfr_weibull}}, \code{\link[dfr.dist]{is_dfr_dist}}}
+  \item{flexhaz}{\code{\link[flexhaz]{cum_haz}}, \code{\link[flexhaz]{dfr_dist}}, \code{\link[flexhaz]{dfr_exponential}}, \code{\link[flexhaz]{dfr_gompertz}}, \code{\link[flexhaz]{dfr_loglogistic}}, \code{\link[flexhaz]{dfr_weibull}}, \code{\link[flexhaz]{is_dfr_dist}}}
 
   \item{generics}{\code{\link[generics]{fit}}}
 

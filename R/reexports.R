@@ -35,25 +35,25 @@ likelihood.model::assumptions
 #' @export
 generics::fit
 
-#' @importFrom dfr.dist dfr_dist is_dfr_dist cum_haz
+#' @importFrom flexhaz dfr_dist is_dfr_dist cum_haz
 #'   dfr_exponential dfr_weibull dfr_gompertz dfr_loglogistic
 #' @export
-dfr.dist::dfr_dist
+flexhaz::dfr_dist
 
 #' @export
-dfr.dist::is_dfr_dist
+flexhaz::is_dfr_dist
 
 #' @export
-dfr.dist::cum_haz
+flexhaz::cum_haz
 
 #' @export
-dfr.dist::dfr_exponential
+flexhaz::dfr_exponential
 
 #' @export
-dfr.dist::dfr_weibull
+flexhaz::dfr_weibull
 
 #' @export
-dfr.dist::dfr_gompertz
+flexhaz::dfr_gompertz
 
 #' @export
-dfr.dist::dfr_loglogistic
+flexhaz::dfr_loglogistic

@@ -26,7 +26,7 @@ Consider a server with three independent failure modes:
 - **Memory** — random bit-flip failures follow an exponential distribution
 - **Power supply** — aging degradation follows a Gompertz distribution
 
-The server fails when *any* component fails. This is a **series system** — like a chain that breaks at its weakest link. The `dfr.dist.series` package lets you compose these failure modes into a single distribution that captures the full system behavior.
+The server fails when *any* component fails. This is a **series system** — like a chain that breaks at its weakest link. The `serieshaz` package lets you compose these failure modes into a single distribution that captures the full system behavior.
 
 ## What Is a Series System?
 
@@ -43,7 +43,7 @@ This follows directly from component independence: the probability that the syst
 ## Quick Start
 
 ```{r quick-start}
-library(dfr.dist.series)
+library(serieshaz)
 
 # Define three failure mode components
 disk    <- dfr_weibull(shape = 2, scale = 500)
@@ -61,7 +61,7 @@ The system object has 5 parameters total: 2 from Weibull + 1 from exponential + 
 param_layout(server)
 ```
 
-## Everything from dfr.dist Works
+## Everything from flexhaz Works
 
 Because `dfr_dist_series` inherits from `dfr_dist`, all standard distribution methods work out of the box — no special code needed.
 
@@ -183,11 +183,11 @@ round(table(failing) / length(failing), 3)
 
 ## The Ecosystem
 
-`dfr.dist.series` builds on three packages:
+`serieshaz` builds on three packages:
 
 - **[algebraic.dist](https://github.com/queelius/algebraic.dist)** — Base distribution generics: `hazard`, `surv`, `cdf`, `inv_cdf`, `sampler`, `params`
 - **[likelihood.model](https://github.com/queelius/likelihood.model)** — Statistical inference: `loglik`, `score`, `hess_loglik`, `fit`, `assumptions`
-- **[dfr.dist](https://github.com/queelius/dfr.dist)** — DFR distributions: `dfr_dist`, `dfr_exponential`, `dfr_weibull`, `dfr_gompertz`, `dfr_loglogistic`
+- **[flexhaz](https://github.com/queelius/flexhaz)** — DFR distributions: `dfr_dist`, `dfr_exponential`, `dfr_weibull`, `dfr_gompertz`, `dfr_loglogistic`
 
 The inheritance chain is: `dfr_dist_series` → `dfr_dist` → `likelihood_model` → `univariate_dist` → `dist`. Every method defined at any level in this chain works automatically on series systems.
 

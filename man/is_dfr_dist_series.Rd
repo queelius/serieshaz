@@ -19,12 +19,12 @@ Returns \code{TRUE} if \code{x} inherits from \code{"dfr_dist_series"},
 \details{
 Since \code{dfr_dist_series} inherits from \code{dfr_dist}, an object
 that passes \code{is_dfr_dist_series()} will also pass
-\code{\link[dfr.dist]{is_dfr_dist}()}. Use this function when you need to
+\code{\link[flexhaz]{is_dfr_dist}()}. Use this function when you need to
 distinguish series systems from ordinary \code{dfr_dist} objects.
 }
 \examples{
 \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),
@@ -43,7 +43,7 @@ is_dfr_dist_series(42)  # FALSE
 }
 \seealso{
 \code{\link{dfr_dist_series}} for the constructor,
-\code{\link[dfr.dist]{is_dfr_dist}} for the parent class predicate
+\code{\link[flexhaz]{is_dfr_dist}} for the parent class predicate
 
 Other series system: 
 \code{\link{assumptions.dfr_dist_series}()},

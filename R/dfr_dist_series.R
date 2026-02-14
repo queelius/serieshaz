@@ -1,7 +1,7 @@
 #' @keywords internal
 #' @details
-#' The \pkg{dfr.dist.series} package composes multiple dynamic failure rate
-#' (\code{\link[dfr.dist]{dfr_dist}}) distributions into a series system
+#' The \pkg{serieshaz} package composes multiple dynamic failure rate
+#' (\code{\link[flexhaz]{dfr_dist}}) distributions into a series system
 #' distribution. A series system fails when \emph{any} component fails, so the
 #' system hazard is the sum of component hazards:
 #' \deqn{h_{sys}(t) = \sum_{j=1}^{m} h_j(t, \theta_j)}
@@ -34,7 +34,7 @@
 #'
 #' @seealso
 #' \code{\link{dfr_dist_series}} for the constructor,
-#' \code{\link[dfr.dist]{dfr_dist}} for the parent class,
+#' \code{\link[flexhaz]{dfr_dist}} for the parent class,
 #' \code{\link[algebraic.dist]{hazard}} for distribution generics,
 #' \code{\link[likelihood.model]{loglik}} for statistical inference generics
 #'
@@ -97,7 +97,7 @@
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' # --- Basic exponential series ---
 #' # Three exponential components -> equivalent to single exponential
@@ -146,11 +146,11 @@
 #' \code{\link{param_layout}} for parameter index mapping,
 #' \code{\link{component_hazard}} for per-component hazard closures,
 #' \code{\link{sample_components}} for sampling component lifetimes,
-#' \code{\link[dfr.dist]{dfr_dist}} for the parent class constructor,
+#' \code{\link[flexhaz]{dfr_dist}} for the parent class constructor,
 #' \code{\link[algebraic.dist]{hazard}} for distribution generics
 #'
 #' @family series system
-#' @importFrom dfr.dist dfr_dist is_dfr_dist
+#' @importFrom flexhaz dfr_dist is_dfr_dist
 #' @export
 dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     stopifnot(is.list(components), length(components) >= 1L)
@@ -249,12 +249,12 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
 #' @details
 #' Since \code{dfr_dist_series} inherits from \code{dfr_dist}, an object
 #' that passes \code{is_dfr_dist_series()} will also pass
-#' \code{\link[dfr.dist]{is_dfr_dist}()}. Use this function when you need to
+#' \code{\link[flexhaz]{is_dfr_dist}()}. Use this function when you need to
 #' distinguish series systems from ordinary \code{dfr_dist} objects.
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_exponential(0.1),
@@ -271,7 +271,7 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
 #' }
 #'
 #' @seealso \code{\link{dfr_dist_series}} for the constructor,
-#'   \code{\link[dfr.dist]{is_dfr_dist}} for the parent class predicate
+#'   \code{\link[flexhaz]{is_dfr_dist}} for the parent class predicate
 #' @family series system
 #' @export
 is_dfr_dist_series <- function(x) {
@@ -300,7 +300,7 @@ is_dfr_dist_series <- function(x) {
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_exponential(0.1),
@@ -370,7 +370,7 @@ print.dfr_dist_series <- function(x, ...) {
 #'
 #' @examples
 #' \donttest{
-#' library(dfr.dist)
+#' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
 #'     dfr_exponential(0.1),
