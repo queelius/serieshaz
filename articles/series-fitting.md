@@ -4,8 +4,8 @@
 
 In practice, we observe system-level failure data: the time at which a
 system failed (or was censored), but often *not* which component caused
-the failure. The `dfr.dist.series` package fits series system models to
-such data via maximum likelihood estimation (MLE).
+the failure. The `serieshaz` package fits series system models to such
+data via maximum likelihood estimation (MLE).
 
 ## Data Format
 
@@ -27,7 +27,7 @@ The censoring indicator values are:
 ### Step 1: Define the System Model
 
 ``` r
-library(dfr.dist.series)
+library(serieshaz)
 
 # Hypothesize: system has two failure modes
 #   - Wear-out (Weibull)

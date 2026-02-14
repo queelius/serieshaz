@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Series System Distributions: Overview • dfr.dist.series</title>
+<title>Series System Distributions: Overview • serieshaz</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">dfr.dist.series</a>
+    <a class="navbar-brand me-2" href="../index.html">serieshaz</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -37,7 +37,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/dfr.dist.series"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/serieshaz"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -54,7 +54,7 @@
       <h1>Series System Distributions: Overview</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/queelius/dfr.dist.series/blob/HEAD/vignettes/series-overview.Rmd" class="external-link"><code>vignettes/series-overview.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/queelius/serieshaz/blob/HEAD/vignettes/series-overview.Rmd" class="external-link"><code>vignettes/series-overview.Rmd</code></a></small>
       <div class="d-none name"><code>series-overview.Rmd</code></div>
     </div>
 
@@ -77,8 +77,8 @@ distribution</li>
 </ul>
 <p>The server fails when <em>any</em> component fails. This is a
 <strong>series system</strong> — like a chain that breaks at its weakest
-link. The <code>dfr.dist.series</code> package lets you compose these
-failure modes into a single distribution that captures the full system
+link. The <code>serieshaz</code> package lets you compose these failure
+modes into a single distribution that captures the full system
 behavior.</p>
 </div>
 <div class="section level2">
@@ -103,12 +103,12 @@ is the probability that <em>all</em> components survive to time
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/queelius/dfr.dist.series" class="external-link">dfr.dist.series</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/queelius/serieshaz" class="external-link">serieshaz</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define three failure mode components</span></span>
-<span><span class="va">disk</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="va">memory</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.001</span><span class="op">)</span></span>
-<span><span class="va">psu</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_gompertz.html" class="external-link">dfr_gompertz</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0.0001</span>, b <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span>
+<span><span class="va">disk</span>    <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">memory</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.001</span><span class="op">)</span></span>
+<span><span class="va">psu</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_gompertz.html" class="external-link">dfr_gompertz</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0.0001</span>, b <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compose into a series system</span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dfr_dist_series.html">dfr_dist_series</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">disk</span>, <span class="va">memory</span>, <span class="va">psu</span><span class="op">)</span><span class="op">)</span></span>
@@ -134,7 +134,7 @@ components:</p>
 <span><span class="co">#&gt; [1] 4 5</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="everything-from-dfr-dist-works">Everything from dfr.dist Works<a class="anchor" aria-label="anchor" href="#everything-from-dfr-dist-works"></a>
+<h2 id="everything-from-flexhaz-works">Everything from flexhaz Works<a class="anchor" aria-label="anchor" href="#everything-from-flexhaz-works"></a>
 </h2>
 <p>Because <code>dfr_dist_series</code> inherits from
 <code>dfr_dist</code>, all standard distribution methods work out of the
@@ -207,8 +207,8 @@ For a cleaner demonstration, we fit a simpler 2-component model:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Simpler 2-component model for a clean fit demo</span></span>
 <span><span class="va">fit_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dfr_dist_series.html">dfr_dist_series</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.01</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">true_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">100</span>, <span class="fl">0.01</span><span class="op">)</span></span>
 <span></span>
@@ -304,7 +304,7 @@ by around
 <div class="section level2">
 <h2 id="the-ecosystem">The Ecosystem<a class="anchor" aria-label="anchor" href="#the-ecosystem"></a>
 </h2>
-<p><code>dfr.dist.series</code> builds on three packages:</p>
+<p><code>serieshaz</code> builds on three packages:</p>
 <ul>
 <li>
 <strong><a href="https://github.com/queelius/algebraic.dist" class="external-link">algebraic.dist</a></strong>
@@ -319,7 +319,7 @@ by around
 <code>assumptions</code>
 </li>
 <li>
-<strong><a href="https://github.com/queelius/dfr.dist" class="external-link">dfr.dist</a></strong> — DFR
+<strong><a href="https://github.com/queelius/flexhaz" class="external-link">flexhaz</a></strong> — DFR
 distributions: <code>dfr_dist</code>, <code>dfr_exponential</code>,
 <code>dfr_weibull</code>, <code>dfr_gompertz</code>,
 <code>dfr_loglogistic</code>

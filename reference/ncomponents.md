@@ -17,7 +17,7 @@ ncomponents(x, ...)
 - x:
 
   A system object (e.g.,
-  [`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)).
+  [`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)).
 
 - ...:
 
@@ -30,7 +30,7 @@ Integer, the number of components.
 ## Details
 
 For a
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 object created from a list of `m` components, this simply returns `m`.
 This is useful for programmatically iterating over components, e.g., for
 plotting hazard decompositions or computing failure attribution.
@@ -42,22 +42,22 @@ plotting hazard decompositions or computing failure attribution.
 
 ## See also
 
-[`component`](https://queelius.github.io/dfr.dist.series/reference/component.md)
+[`component`](https://queelius.github.io/serieshaz/reference/component.md)
 to extract individual components,
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor
 
 Other system introspection:
-[`component()`](https://queelius.github.io/dfr.dist.series/reference/component.md),
-[`component_hazard()`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md),
-[`param_layout()`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md),
-[`sample_components()`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+[`component()`](https://queelius.github.io/serieshaz/reference/component.md),
+[`component_hazard()`](https://queelius.github.io/serieshaz/reference/component_hazard.md),
+[`param_layout()`](https://queelius.github.io/serieshaz/reference/param_layout.md),
+[`sample_components()`](https://queelius.github.io/serieshaz/reference/sample_components.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),

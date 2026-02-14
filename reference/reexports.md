@@ -12,15 +12,15 @@ to see their documentation.
   [`sampler`](https://queelius.github.io/algebraic.dist/reference/sampler.html),
   [`surv`](https://queelius.github.io/algebraic.dist/reference/surv.html)
 
-- dfr.dist:
+- flexhaz:
 
-  [`cum_haz`](https://queelius.github.io/dfr.dist/reference/cum_haz.html),
-  [`dfr_dist`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html),
-  [`dfr_exponential`](https://queelius.github.io/dfr.dist/reference/dfr_exponential.html),
-  [`dfr_gompertz`](https://queelius.github.io/dfr.dist/reference/dfr_gompertz.html),
-  [`dfr_loglogistic`](https://queelius.github.io/dfr.dist/reference/dfr_loglogistic.html),
-  [`dfr_weibull`](https://queelius.github.io/dfr.dist/reference/dfr_weibull.html),
-  [`is_dfr_dist`](https://queelius.github.io/dfr.dist/reference/is_dfr_dist.html)
+  [`cum_haz`](https://queelius.github.io/flexhaz/reference/cum_haz.html),
+  [`dfr_dist`](https://queelius.github.io/flexhaz/reference/dfr_dist.html),
+  [`dfr_exponential`](https://queelius.github.io/flexhaz/reference/dfr_exponential.html),
+  [`dfr_gompertz`](https://queelius.github.io/flexhaz/reference/dfr_gompertz.html),
+  [`dfr_loglogistic`](https://queelius.github.io/flexhaz/reference/dfr_loglogistic.html),
+  [`dfr_weibull`](https://queelius.github.io/flexhaz/reference/dfr_weibull.html),
+  [`is_dfr_dist`](https://queelius.github.io/flexhaz/reference/is_dfr_dist.html)
 
 - generics:
 

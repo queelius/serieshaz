@@ -10,7 +10,7 @@ characteristics. Consider a server with:
 - **Power supply** — Gompertz degradation (accelerating hazard)
 
 ``` r
-library(dfr.dist.series)
+library(serieshaz)
 
 disk <- dfr_weibull(shape = 2, scale = 500)
 mem  <- dfr_exponential(0.001)
@@ -117,7 +117,7 @@ cat(sprintf("Difference:          %.2e\n", abs(nested_sum - system_h)))
 ## Custom Components
 
 The
-[`dfr_dist()`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html)
+[`dfr_dist()`](https://queelius.github.io/flexhaz/reference/dfr_dist.html)
 constructor lets you define components with arbitrary hazard functions.
 These can be used in series systems alongside the built-in
 distributions.
@@ -186,7 +186,7 @@ just more slowly than the analytical path.
 
 ## Failure Attribution
 
-[`sample_components()`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+[`sample_components()`](https://queelius.github.io/serieshaz/reference/sample_components.md)
 generates component-level lifetimes, enabling identification of which
 component caused each system failure.
 

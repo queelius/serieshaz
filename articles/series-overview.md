@@ -10,9 +10,9 @@ Consider a server with three independent failure modes:
 - **Power supply** — aging degradation follows a Gompertz distribution
 
 The server fails when *any* component fails. This is a **series system**
-— like a chain that breaks at its weakest link. The `dfr.dist.series`
-package lets you compose these failure modes into a single distribution
-that captures the full system behavior.
+— like a chain that breaks at its weakest link. The `serieshaz` package
+lets you compose these failure modes into a single distribution that
+captures the full system behavior.
 
 ## What Is a Series System?
 
@@ -34,7 +34,7 @@ survive to time $t$.
 ## Quick Start
 
 ``` r
-library(dfr.dist.series)
+library(serieshaz)
 
 # Define three failure mode components
 disk    <- dfr_weibull(shape = 2, scale = 500)
@@ -67,7 +67,7 @@ param_layout(server)
 #> [1] 4 5
 ```
 
-## Everything from dfr.dist Works
+## Everything from flexhaz Works
 
 Because `dfr_dist_series` inherits from `dfr_dist`, all standard
 distribution methods work out of the box — no special code needed.
@@ -157,7 +157,7 @@ With 500 observations and a mixed-type model (Weibull + exponential),
 the MLE recovers the parameters reasonably well. The Weibull’s
 increasing hazard shape is distinguishable from the exponential’s
 constant hazard, making this system identifiable. See
-[`vignette("series-fitting")`](https://queelius.github.io/dfr.dist.series/articles/series-fitting.md)
+[`vignette("series-fitting")`](https://queelius.github.io/serieshaz/articles/series-fitting.md)
 for a thorough treatment of identifiability, censoring, and model
 selection.
 
@@ -230,7 +230,7 @@ round(table(failing) / length(failing), 3)
 
 ## The Ecosystem
 
-`dfr.dist.series` builds on three packages:
+`serieshaz` builds on three packages:
 
 - **[algebraic.dist](https://github.com/queelius/algebraic.dist)** —
   Base distribution generics: `hazard`, `surv`, `cdf`, `inv_cdf`,
@@ -238,7 +238,7 @@ round(table(failing) / length(failing), 3)
 - **[likelihood.model](https://github.com/queelius/likelihood.model)** —
   Statistical inference: `loglik`, `score`, `hess_loglik`, `fit`,
   `assumptions`
-- **[dfr.dist](https://github.com/queelius/dfr.dist)** — DFR
+- **[flexhaz](https://github.com/queelius/flexhaz)** — DFR
   distributions: `dfr_dist`, `dfr_exponential`, `dfr_weibull`,
   `dfr_gompertz`, `dfr_loglogistic`
 
@@ -248,9 +248,9 @@ any level in this chain works automatically on series systems.
 
 ## Where to Go Next
 
-- [`vignette("series-math")`](https://queelius.github.io/dfr.dist.series/articles/series-math.md)
+- [`vignette("series-math")`](https://queelius.github.io/serieshaz/articles/series-math.md)
   — Mathematical foundations and derivations
-- [`vignette("series-fitting")`](https://queelius.github.io/dfr.dist.series/articles/series-fitting.md)
+- [`vignette("series-fitting")`](https://queelius.github.io/serieshaz/articles/series-fitting.md)
   — MLE fitting workflows, identifiability, and diagnostics
-- [`vignette("series-advanced")`](https://queelius.github.io/dfr.dist.series/articles/series-advanced.md)
+- [`vignette("series-advanced")`](https://queelius.github.io/serieshaz/articles/series-advanced.md)
   — Nested systems, custom components, and failure attribution

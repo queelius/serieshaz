@@ -31,7 +31,7 @@ Let’s verify these relationships numerically.
 ### Property 1: Hazard Sum
 
 ``` r
-library(dfr.dist.series)
+library(serieshaz)
 
 sys <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100),

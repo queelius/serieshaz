@@ -18,7 +18,7 @@ param_layout(x, ...)
 - x:
 
   A system object (e.g.,
-  [`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)).
+  [`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)).
 
 - ...:
 
@@ -56,24 +56,24 @@ components.
 
 ## See also
 
-[`component`](https://queelius.github.io/dfr.dist.series/reference/component.md)
+[`component`](https://queelius.github.io/serieshaz/reference/component.md)
 to extract a component with its parameters,
 [`params`](https://queelius.github.io/algebraic.dist/reference/params.html)
 to get the full parameter vector,
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor
 
 Other system introspection:
-[`component()`](https://queelius.github.io/dfr.dist.series/reference/component.md),
-[`component_hazard()`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md),
-[`ncomponents()`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md),
-[`sample_components()`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+[`component()`](https://queelius.github.io/serieshaz/reference/component.md),
+[`component_hazard()`](https://queelius.github.io/serieshaz/reference/component_hazard.md),
+[`ncomponents()`](https://queelius.github.io/serieshaz/reference/ncomponents.md),
+[`sample_components()`](https://queelius.github.io/serieshaz/reference/sample_components.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100),

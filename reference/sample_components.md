@@ -18,7 +18,7 @@ sample_components(x, n, par = NULL, ...)
 - x:
 
   A system object (e.g.,
-  [`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)).
+  [`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)).
 
 - n:
 
@@ -62,22 +62,22 @@ failures are caused by each component?
 
 [`sampler`](https://queelius.github.io/algebraic.dist/reference/sampler.html)
 for system-level sampling,
-[`component`](https://queelius.github.io/dfr.dist.series/reference/component.md)
+[`component`](https://queelius.github.io/serieshaz/reference/component.md)
 to extract individual component objects,
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor
 
 Other system introspection:
-[`component()`](https://queelius.github.io/dfr.dist.series/reference/component.md),
-[`component_hazard()`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md),
-[`ncomponents()`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md),
-[`param_layout()`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md)
+[`component()`](https://queelius.github.io/serieshaz/reference/component.md),
+[`component_hazard()`](https://queelius.github.io/serieshaz/reference/component_hazard.md),
+[`ncomponents()`](https://queelius.github.io/serieshaz/reference/ncomponents.md),
+[`param_layout()`](https://queelius.github.io/serieshaz/reference/param_layout.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),

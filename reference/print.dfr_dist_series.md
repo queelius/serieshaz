@@ -41,19 +41,19 @@ The output includes:
 
 ## See also
 
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor
 
 Other series system:
-[`assumptions.dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/assumptions.dfr_dist_series.md),
-[`dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md),
-[`is_dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/is_dfr_dist_series.md)
+[`assumptions.dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/assumptions.dfr_dist_series.md),
+[`dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md),
+[`is_dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/is_dfr_dist_series.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),

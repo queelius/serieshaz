@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Series System Distributions from Dynamic Failure Rate Components • dfr.dist.series</title>
+<title>Series System Distributions from Dynamic Failure Rate Components • serieshaz</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">dfr.dist.series</a>
+    <a class="navbar-brand me-2" href="index.html">serieshaz</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
@@ -39,7 +39,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/dfr.dist.series"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/queelius/serieshaz"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -48,33 +48,32 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="dfrdistseries">dfr.dist.series<a class="anchor" aria-label="anchor" href="#dfrdistseries"></a>
+<div class="page-header"><h1 id="serieshaz">serieshaz<a class="anchor" aria-label="anchor" href="#serieshaz"></a>
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
 <p>Series System Distributions from Dynamic Failure Rate Components</p>
-<p><strong>dfr.dist.series</strong> composes multiple <code>dfr_dist</code> objects into a series system distribution. A series system fails when <em>any</em> component fails, so the system hazard is the sum of component hazards:</p>
+<p><strong>serieshaz</strong> composes multiple <code>dfr_dist</code> objects into a series system distribution. A series system fails when <em>any</em> component fails, so the system hazard is the sum of component hazards:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mrow><mi>s</mi><mi>y</mi><mi>s</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msub><mi>h</mi><mi>j</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>,</mo><msub><mi>θ</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">h_{sys}(t) = \sum_{j=1}^{m} h_j(t, \theta_j)</annotation></semantics></math></p>
 <p>The resulting object inherits from <code>dfr_dist</code>, so all existing methods — hazard, survival, CDF, density, sampling, log-likelihood, and MLE fitting — work automatically.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the development version from GitHub:</p>
+<p>Install from <a href="https://queelius.r-universe.dev" class="external-link">r-universe</a>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"queelius/dfr.dist.series"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"serieshaz"</span>, repos <span class="op">=</span> <span class="st">"https://queelius.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/queelius/dfr.dist.series" class="external-link">dfr.dist.series</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/queelius/serieshaz" class="external-link">serieshaz</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Three-component server with different failure modes</span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dfr_dist_series.html">dfr_dist_series</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>,     <span class="co"># disk wear-out</span></span>
-<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.001</span><span class="op">)</span>,            <span class="co"># random memory failure</span></span>
-<span>    <span class="fu"><a href="https://queelius.github.io/dfr.dist/reference/dfr_gompertz.html" class="external-link">dfr_gompertz</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0.0001</span>, b <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>       <span class="co"># PSU degradation</span></span>
+<span>    <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_weibull.html" class="external-link">dfr_weibull</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>,     <span class="co"># disk wear-out</span></span>
+<span>    <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_exponential.html" class="external-link">dfr_exponential</a></span><span class="op">(</span><span class="fl">0.001</span><span class="op">)</span>,            <span class="co"># random memory failure</span></span>
+<span>    <span class="fu"><a href="https://queelius.github.io/flexhaz/reference/dfr_gompertz.html" class="external-link">dfr_gompertz</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0.0001</span>, b <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span>       <span class="co"># PSU degradation</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Evaluate system hazard and survival</span></span>
@@ -125,14 +124,14 @@
 <div class="section level2">
 <h2 id="ecosystem">Ecosystem<a class="anchor" aria-label="anchor" href="#ecosystem"></a>
 </h2>
-<p>dfr.dist.series builds on:</p>
+<p>serieshaz builds on:</p>
 <ul>
 <li>
 <a href="https://github.com/queelius/algebraic.dist" class="external-link">algebraic.dist</a> — Base distribution generics</li>
 <li>
 <a href="https://github.com/queelius/likelihood.model" class="external-link">likelihood.model</a> — Statistical inference generics</li>
 <li>
-<a href="https://github.com/queelius/dfr.dist" class="external-link">dfr.dist</a> — Dynamic failure rate distributions</li>
+<a href="https://github.com/queelius/flexhaz" class="external-link">flexhaz</a> — Dynamic failure rate distributions</li>
 </ul>
 </div>
 <div class="section level2">
@@ -153,8 +152,8 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/queelius/dfr.dist.series/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/queelius/dfr.dist.series/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/queelius/serieshaz/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/queelius/serieshaz/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -170,7 +169,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing dfr.dist.series</a></li>
+<li><a href="authors.html#citation">Citing serieshaz</a></li>
 </ul>
 </div>
 

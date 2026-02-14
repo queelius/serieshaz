@@ -1,7 +1,7 @@
 # Extract a component from a system
 
 Extracts component `j` from a series system as a standalone
-[`dfr_dist`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html)
+[`dfr_dist`](https://queelius.github.io/flexhaz/reference/dfr_dist.html)
 object, with its parameters set to the current values from the system's
 parameter vector (via the layout).
 
@@ -19,7 +19,7 @@ component(x, j, ...)
 - x:
 
   A system object (e.g.,
-  [`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)).
+  [`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)).
 
 - j:
 
@@ -32,7 +32,7 @@ component(x, j, ...)
 ## Value
 
 A
-[`dfr_dist`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html)
+[`dfr_dist`](https://queelius.github.io/flexhaz/reference/dfr_dist.html)
 object for component `j`.
 
 ## Details
@@ -57,26 +57,26 @@ original series system.
 
 ## See also
 
-[`ncomponents`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md)
+[`ncomponents`](https://queelius.github.io/serieshaz/reference/ncomponents.md)
 for the component count,
-[`component_hazard`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md)
+[`component_hazard`](https://queelius.github.io/serieshaz/reference/component_hazard.md)
 for getting just the hazard closure,
-[`param_layout`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md)
+[`param_layout`](https://queelius.github.io/serieshaz/reference/param_layout.md)
 for parameter index mapping,
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor
 
 Other system introspection:
-[`component_hazard()`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md),
-[`ncomponents()`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md),
-[`param_layout()`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md),
-[`sample_components()`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+[`component_hazard()`](https://queelius.github.io/serieshaz/reference/component_hazard.md),
+[`ncomponents()`](https://queelius.github.io/serieshaz/reference/ncomponents.md),
+[`param_layout()`](https://queelius.github.io/serieshaz/reference/param_layout.md),
+[`sample_components()`](https://queelius.github.io/serieshaz/reference/sample_components.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100),

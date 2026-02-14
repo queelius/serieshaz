@@ -1,10 +1,10 @@
-# dfr.dist.series
+# serieshaz
 
 Series System Distributions from Dynamic Failure Rate Components
 
-**dfr.dist.series** composes multiple `dfr_dist` objects into a series
-system distribution. A series system fails when *any* component fails,
-so the system hazard is the sum of component hazards:
+**serieshaz** composes multiple `dfr_dist` objects into a series system
+distribution. A series system fails when *any* component fails, so the
+system hazard is the sum of component hazards:
 
 $$h_{sys}(t) = \sum\limits_{j = 1}^{m}h_{j}\left( t,\theta_{j} \right)$$
 
@@ -14,17 +14,16 @@ fitting — work automatically.
 
 ## Installation
 
-Install the development version from GitHub:
+Install from [r-universe](https://queelius.r-universe.dev):
 
 ``` r
-# install.packages("remotes")
-remotes::install_github("queelius/dfr.dist.series")
+install.packages("serieshaz", repos = "https://queelius.r-universe.dev")
 ```
 
 ## Quick Start
 
 ``` r
-library(dfr.dist.series)
+library(serieshaz)
 
 # Three-component server with different failure modes
 server <- dfr_dist_series(list(
@@ -72,11 +71,11 @@ for (j in 1:ncomponents(server)) {
 - **MLE fitting**: Fit series system parameters to observed failure data
   with [`fit()`](https://generics.r-lib.org/reference/fit.html)
 - **Introspection**:
-  [`ncomponents()`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md),
-  [`component()`](https://queelius.github.io/dfr.dist.series/reference/component.md),
-  [`param_layout()`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md),
-  [`component_hazard()`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md),
-  [`sample_components()`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+  [`ncomponents()`](https://queelius.github.io/serieshaz/reference/ncomponents.md),
+  [`component()`](https://queelius.github.io/serieshaz/reference/component.md),
+  [`param_layout()`](https://queelius.github.io/serieshaz/reference/param_layout.md),
+  [`component_hazard()`](https://queelius.github.io/serieshaz/reference/component_hazard.md),
+  [`sample_components()`](https://queelius.github.io/serieshaz/reference/sample_components.md)
 - **Nesting**: Series systems can be nested as components of larger
   series systems
 - **Analytical cumulative hazard**: When all components provide
@@ -84,22 +83,22 @@ for (j in 1:ncomponents(server)) {
 
 ## Ecosystem
 
-dfr.dist.series builds on:
+serieshaz builds on:
 
 - [algebraic.dist](https://github.com/queelius/algebraic.dist) — Base
   distribution generics
 - [likelihood.model](https://github.com/queelius/likelihood.model) —
   Statistical inference generics
-- [dfr.dist](https://github.com/queelius/dfr.dist) — Dynamic failure
-  rate distributions
+- [flexhaz](https://github.com/queelius/flexhaz) — Dynamic failure rate
+  distributions
 
 ## Documentation
 
-- [`vignette("series-overview")`](https://queelius.github.io/dfr.dist.series/articles/series-overview.md)
+- [`vignette("series-overview")`](https://queelius.github.io/serieshaz/articles/series-overview.md)
   — Package overview and quick start
-- [`vignette("series-math")`](https://queelius.github.io/dfr.dist.series/articles/series-math.md)
+- [`vignette("series-math")`](https://queelius.github.io/serieshaz/articles/series-math.md)
   — Mathematical foundations
-- [`vignette("series-fitting")`](https://queelius.github.io/dfr.dist.series/articles/series-fitting.md)
+- [`vignette("series-fitting")`](https://queelius.github.io/serieshaz/articles/series-fitting.md)
   — MLE fitting and inference
-- [`vignette("series-advanced")`](https://queelius.github.io/dfr.dist.series/articles/series-advanced.md)
+- [`vignette("series-advanced")`](https://queelius.github.io/serieshaz/articles/series-advanced.md)
   — Advanced composition patterns

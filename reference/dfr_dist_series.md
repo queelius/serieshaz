@@ -71,33 +71,33 @@ these parent classes work automatically.
 
 ## See also
 
-[`is_dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/is_dfr_dist_series.md)
+[`is_dfr_dist_series`](https://queelius.github.io/serieshaz/reference/is_dfr_dist_series.md)
 for the type predicate,
-[`ncomponents`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md)
+[`ncomponents`](https://queelius.github.io/serieshaz/reference/ncomponents.md)
 and
-[`component`](https://queelius.github.io/dfr.dist.series/reference/component.md)
+[`component`](https://queelius.github.io/serieshaz/reference/component.md)
 for introspection,
-[`param_layout`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md)
+[`param_layout`](https://queelius.github.io/serieshaz/reference/param_layout.md)
 for parameter index mapping,
-[`component_hazard`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md)
+[`component_hazard`](https://queelius.github.io/serieshaz/reference/component_hazard.md)
 for per-component hazard closures,
-[`sample_components`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md)
+[`sample_components`](https://queelius.github.io/serieshaz/reference/sample_components.md)
 for sampling component lifetimes,
-[`dfr_dist`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html)
+[`dfr_dist`](https://queelius.github.io/flexhaz/reference/dfr_dist.html)
 for the parent class constructor,
 [`hazard`](https://queelius.github.io/algebraic.dist/reference/hazard.html)
 for distribution generics
 
 Other series system:
-[`assumptions.dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/assumptions.dfr_dist_series.md),
-[`is_dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/is_dfr_dist_series.md),
-[`print.dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/print.dfr_dist_series.md)
+[`assumptions.dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/assumptions.dfr_dist_series.md),
+[`is_dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/is_dfr_dist_series.md),
+[`print.dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/print.dfr_dist_series.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 # --- Basic exponential series ---
 # Three exponential components -> equivalent to single exponential

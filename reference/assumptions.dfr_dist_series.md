@@ -60,21 +60,21 @@ invalidates the hazard-sum property that defines series systems.
 
 [`assumptions`](https://queelius.github.io/likelihood.model/reference/assumptions.html)
 for the generic,
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor,
-[`vignette("series-fitting")`](https://queelius.github.io/dfr.dist.series/articles/series-fitting.md)
+[`vignette("series-fitting")`](https://queelius.github.io/serieshaz/articles/series-fitting.md)
 for how assumptions affect inference
 
 Other series system:
-[`dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md),
-[`is_dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/is_dfr_dist_series.md),
-[`print.dfr_dist_series()`](https://queelius.github.io/dfr.dist.series/reference/print.dfr_dist_series.md)
+[`dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md),
+[`is_dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/is_dfr_dist_series.md),
+[`print.dfr_dist_series()`](https://queelius.github.io/serieshaz/reference/print.dfr_dist_series.md)
 
 ## Examples
 
 ``` r
 # \donttest{
-library(dfr.dist)
+library(flexhaz)
 
 sys <- dfr_dist_series(list(
     dfr_exponential(0.1),

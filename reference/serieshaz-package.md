@@ -1,4 +1,4 @@
-# dfr.dist.series: Series System Distributions from Dynamic Failure Rate Components
+# serieshaz: Series System Distributions from Dynamic Failure Rate Components
 
 Compose multiple dynamic failure rate (DFR) distributions into series
 system distributions. A series system fails when any component fails,
@@ -9,8 +9,8 @@ automatically.
 
 ## Details
 
-The dfr.dist.series package composes multiple dynamic failure rate
-([`dfr_dist`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html))
+The serieshaz package composes multiple dynamic failure rate
+([`dfr_dist`](https://queelius.github.io/flexhaz/reference/dfr_dist.html))
 distributions into a series system distribution. A series system fails
 when *any* component fails, so the system hazard is the sum of component
 hazards: \$\$h\_{sys}(t) = \sum\_{j=1}^{m} h_j(t, \theta_j)\$\$ and the
@@ -31,50 +31,50 @@ concatenated parameter vector.
 
 ## Package functions
 
-- [`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md):
+- [`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md):
 
   Constructor: compose components into a series system
 
-- [`is_dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/is_dfr_dist_series.md):
+- [`is_dfr_dist_series`](https://queelius.github.io/serieshaz/reference/is_dfr_dist_series.md):
 
   Type predicate
 
-- [`ncomponents`](https://queelius.github.io/dfr.dist.series/reference/ncomponents.md):
+- [`ncomponents`](https://queelius.github.io/serieshaz/reference/ncomponents.md):
 
   Number of components
 
-- [`component`](https://queelius.github.io/dfr.dist.series/reference/component.md):
+- [`component`](https://queelius.github.io/serieshaz/reference/component.md):
 
   Extract a single component
 
-- [`param_layout`](https://queelius.github.io/dfr.dist.series/reference/param_layout.md):
+- [`param_layout`](https://queelius.github.io/serieshaz/reference/param_layout.md):
 
   Parameter index mapping
 
-- [`component_hazard`](https://queelius.github.io/dfr.dist.series/reference/component_hazard.md):
+- [`component_hazard`](https://queelius.github.io/serieshaz/reference/component_hazard.md):
 
   Component-level hazard closure
 
-- [`sample_components`](https://queelius.github.io/dfr.dist.series/reference/sample_components.md):
+- [`sample_components`](https://queelius.github.io/serieshaz/reference/sample_components.md):
 
   Sample component lifetimes
 
 ## See also
 
-[`dfr_dist_series`](https://queelius.github.io/dfr.dist.series/reference/dfr_dist_series.md)
+[`dfr_dist_series`](https://queelius.github.io/serieshaz/reference/dfr_dist_series.md)
 for the constructor,
-[`dfr_dist`](https://queelius.github.io/dfr.dist/reference/dfr_dist.html)
+[`dfr_dist`](https://queelius.github.io/flexhaz/reference/dfr_dist.html)
 for the parent class,
 [`hazard`](https://queelius.github.io/algebraic.dist/reference/hazard.html)
 for distribution generics,
 [`loglik`](https://queelius.github.io/likelihood.model/reference/loglik.html)
 for statistical inference generics
 
-[`vignette("series-overview")`](https://queelius.github.io/dfr.dist.series/articles/series-overview.md)
+[`vignette("series-overview")`](https://queelius.github.io/serieshaz/articles/series-overview.md)
 for a quick-start guide,
-[`vignette("series-math")`](https://queelius.github.io/dfr.dist.series/articles/series-math.md)
+[`vignette("series-math")`](https://queelius.github.io/serieshaz/articles/series-math.md)
 for mathematical foundations,
-[`vignette("series-fitting")`](https://queelius.github.io/dfr.dist.series/articles/series-fitting.md)
+[`vignette("series-fitting")`](https://queelius.github.io/serieshaz/articles/series-fitting.md)
 for MLE fitting workflows
 
 ## Author

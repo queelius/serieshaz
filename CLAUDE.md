@@ -11,7 +11,7 @@ Rscript -e 'remotes::install_deps(dependencies = TRUE)'
 
 # Build and check
 R CMD build .
-R CMD check dfr.dist.series_*.tar.gz
+R CMD check serieshaz_*.tar.gz
 
 # Run all tests
 Rscript -e 'testthat::test_dir("tests/testthat")'
@@ -31,7 +31,7 @@ Rscript -e 'covr::package_coverage()'
 
 ## Architecture
 
-This package composes multiple `dfr_dist` objects (from the `dfr.dist`
+This package composes multiple `dfr_dist` objects (from the `flexhaz`
 package) into a **series system distribution**. A series system fails
 when *any* component fails, so the system hazard is the sum of component
 hazards: `h_sys(t) = sum_j h_j(t)`.
@@ -50,7 +50,7 @@ systems without reimplementation.
   `cdf`, `inv_cdf`, `sampler`, `params`)
 - **`likelihood.model`**: Statistical inference generics (`loglik`,
   `score`, `hess_loglik`, `assumptions`, `fit`)
-- **`dfr.dist`**: Dynamic failure rate distributions (`dfr_dist`
+- **`flexhaz`**: Dynamic failure rate distributions (`dfr_dist`
   constructor, named distributions like `dfr_exponential`,
   `dfr_weibull`, `dfr_gompertz`, `dfr_loglogistic`)
 
