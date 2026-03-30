@@ -9,3 +9,9 @@
 ^vignettes/.*_cache$
 ^CONTRIBUTING\.md$
 ^CODE_OF_CONDUCT\.md$
+^paper\.md$
+^paper\.bib$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
