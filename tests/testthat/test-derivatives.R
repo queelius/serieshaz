@@ -20,8 +20,10 @@ test_that("score at MLE is approximately zero for exponential series", {
     expect_true(all(abs(score_at_mle) < 0.5))
 })
 
-test_that("Hessian is negative definite at MLE", {
+test_that("Hessian is negative semi-definite at MLE", {
     set.seed(42)
+    # Exponential series is non-identifiable: only sum(rates) is identifiable.
+    # The Hessian is negative semi-definite (one near-zero eigenvalue).
     sys <- make_exp_series(c(0.3, 0.7))
 
     samp <- sampler(sys)
@@ -34,7 +36,29 @@ test_that("Hessian is negative definite at MLE", {
     H <- hess_loglik(sys)
     hess_at_mle <- H(df, par = mle_par)
 
-    # Eigenvalues should all be negative (negative definite)
+    evals <- eigen(hess_at_mle, symmetric = TRUE)$values
+    # At least one strongly negative eigenvalue (the identifiable sum direction)
+    expect_true(min(evals) < -1)
+    # No strongly positive eigenvalues (allow near-zero from non-identifiability)
+    expect_true(all(evals < 1))
+})
+
+test_that("Hessian is negative definite for identifiable Weibull series", {
+    set.seed(42)
+    sys <- make_weibull_series(shapes = c(2, 1.5), scales = c(100, 200))
+
+    samp <- sampler(sys)
+    df <- make_exact_data(samp(300))
+
+    solver <- fit(sys)
+    result <- suppressWarnings(solver(df, par = c(1.8, 90, 1.3, 180),
+                                       method = "Nelder-Mead"))
+    mle_par <- coef(result)
+
+    H <- hess_loglik(sys)
+    hess_at_mle <- H(df, par = mle_par)
+
+    # Weibull series IS identifiable, so Hessian is strictly negative definite
     evals <- eigen(hess_at_mle, symmetric = TRUE)$values
     expect_true(all(evals < 0))
 })

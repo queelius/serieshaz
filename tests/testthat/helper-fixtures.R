@@ -44,3 +44,16 @@ make_mixed_data <- function(exact_times, censored_times) {
         delta = c(rep(1L, length(exact_times)), rep(0L, length(censored_times)))
     )
 }
+
+make_left_censored_data <- function(times) {
+    data.frame(t = times, delta = rep(-1L, length(times)))
+}
+
+make_full_mixed_data <- function(exact_times, right_times, left_times) {
+    data.frame(
+        t = c(exact_times, right_times, left_times),
+        delta = c(rep(1L, length(exact_times)),
+                  rep(0L, length(right_times)),
+                  rep(-1L, length(left_times)))
+    )
+}

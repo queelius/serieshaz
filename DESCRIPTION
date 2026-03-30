@@ -1,6 +1,6 @@
 Package: serieshaz
 Title: Series System Distributions from Dynamic Failure Rate Components
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("Alexander", "Towell", , "lex@metafunctor.com",
                   role = c("aut", "cre"))
 Description: Compose multiple dynamic failure rate (DFR) distributions into
@@ -22,14 +22,11 @@ Imports:
     flexhaz,
     algebraic.dist,
     likelihood.model,
-    generics
+    generics,
+    numDeriv
 Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-Remotes:
-    github::queelius/algebraic.dist,
-    github::queelius/likelihood.model,
-    github::queelius/flexhaz

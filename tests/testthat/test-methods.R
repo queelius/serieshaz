@@ -55,6 +55,14 @@ test_that("component validates index bounds", {
     expect_error(component(sys, 3), "out of range")
 })
 
+test_that("component rejects non-integer j", {
+    sys <- make_exp_series(c(0.1, 0.2))
+    expect_error(component(sys, 1.5), "single integer")
+    expect_error(component(sys, NA), "single integer")
+    expect_error(component(sys, c(1, 2)), "single integer")
+    expect_error(component(sys, "1"), "single integer")
+})
+
 test_that("component_hazard returns correct closure", {
     sys <- make_exp_series(c(0.1, 0.2, 0.3))
 
@@ -79,6 +87,25 @@ test_that("component_hazard validates index", {
     expect_error(component_hazard(sys, 3), "out of range")
 })
 
+test_that("component_hazard rejects non-integer j", {
+    sys <- make_exp_series(c(0.1, 0.2))
+    expect_error(component_hazard(sys, 1.5), "single integer")
+    expect_error(component_hazard(sys, NA), "single integer")
+})
+
+test_that("component_hazard default par works correctly", {
+    sys <- make_exp_series(c(0.1, 0.2))
+    h1 <- component_hazard(sys, 1)
+    h2 <- component_hazard(sys, 2)
+
+    # Default should use component's par from the system
+    expect_equal(h1(5), 0.1, tolerance = 1e-10)
+    expect_equal(h2(5), 0.2, tolerance = 1e-10)
+
+    # Explicit par override works
+    expect_equal(h1(5, par = 0.5), 0.5, tolerance = 1e-10)
+})
+
 test_that("is_dfr_dist_series identifies series objects", {
     sys <- make_exp_series(c(0.1, 0.2))
     expect_true(is_dfr_dist_series(sys))
@@ -92,6 +119,16 @@ test_that("print method works without error", {
     sys <- make_exp_series(c(0.1, 0.2, 0.3))
     expect_output(print(sys), "Series system distribution with 3 components")
     expect_output(print(sys), "Component 1")
+})
+
+test_that("print method shows unknown for NULL par", {
+    sys <- dfr_dist_series(
+        list(dfr_exponential(), dfr_exponential()),
+        par = c(0.1, 0.2),
+        n_par = c(1L, 1L)
+    )
+    sys$par <- NULL
+    expect_output(print(sys), "unknown")
 })
 
 test_that("assumptions returns series-specific assumptions", {

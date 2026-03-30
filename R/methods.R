@@ -8,6 +8,9 @@ ncomponents.dfr_dist_series <- function(x, ...) {
 #'   with its current parameters from the series system's parameter vector.
 #' @export
 component.dfr_dist_series <- function(x, j, ...) {
+    if (!is.numeric(j) || length(j) != 1L || is.na(j) || j != as.integer(j))
+        stop("Component index j must be a single integer")
+    j <- as.integer(j)
     if (j < 1L || j > x$m)
         stop(sprintf("Component index j=%d out of range [1, %d]", j, x$m))
 
@@ -32,14 +35,17 @@ param_layout.dfr_dist_series <- function(x, ...) {
 #' @importFrom algebraic.dist hazard
 #' @export
 component_hazard.dfr_dist_series <- function(x, j, ...) {
+    if (!is.numeric(j) || length(j) != 1L || is.na(j) || j != as.integer(j))
+        stop("Component index j must be a single integer")
+    j <- as.integer(j)
     if (j < 1L || j > x$m)
         stop(sprintf("Component index j=%d out of range [1, %d]", j, x$m))
 
     comp <- x$components[[j]]
-    default_par <- if (!is.null(x$par)) x$par[x$layout[[j]]] else comp$par
 
     function(t, par = NULL, ...) {
-        if (is.null(par)) par <- default_par
+        if (is.null(par))
+            par <- if (!is.null(x$par)) x$par[x$layout[[j]]] else comp$par
         comp$rate(t, par, ...)
     }
 }

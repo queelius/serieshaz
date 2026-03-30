@@ -76,8 +76,12 @@
 #' \eqn{H_{sys}(t) = \sum_j H_j(t)}. Otherwise, falls back to numerical
 #' integration.
 #'
-#' \strong{Score and Hessian}: Fall back to \code{numDeriv::grad} and
-#' \code{numDeriv::hessian} on the (correct) composed log-likelihood.
+#' \strong{Score function}: Uses a decomposed per-component approach rather
+#' than \code{numDeriv} on the full system log-likelihood. When components
+#' provide analytical \code{score_fn}, the cumulative hazard derivative is
+#' computed analytically; the hazard derivative uses \code{numDeriv::jacobian}
+#' per-component (lower-dimensional). The Hessian falls back to
+#' \code{numDeriv::hessian} on the composed log-likelihood.
 #'
 #' \strong{Identifiability}: Exponential series systems are \emph{not}
 #' identifiable from system-level data alone --- only the sum of rates is
@@ -151,6 +155,7 @@
 #'
 #' @family series system
 #' @importFrom flexhaz dfr_dist is_dfr_dist
+#' @importFrom numDeriv jacobian grad
 #' @export
 dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     stopifnot(is.list(components), length(components) >= 1L)
@@ -173,6 +178,8 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     if (length(n_par) != m)
         stop(sprintf("n_par length (%d) must equal number of components (%d)",
                      length(n_par), m))
+    if (any(n_par < 1L))
+        stop("Each component must have at least one parameter")
 
     # Compute parameter layout: which global indices map to each component
     layout <- vector("list", m)
@@ -209,7 +216,7 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
         components, function(comp) !is.null(comp$cum_haz_rate), logical(1))
     sys_cum_haz <- if (all(has_cum_haz)) {
         function(t, par, ...) {
-            H <- 0
+            H <- numeric(length(t))
             for (j in seq_len(m)) {
                 H <- H + components[[j]]$cum_haz_rate(t, par[layout[[j]]], ...)
             }
@@ -219,12 +226,82 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
         NULL
     }
 
+    # Build decomposed system score function.
+    # Instead of numDeriv on the full system log-likelihood (O(P * n * m)),
+    # decompose into per-component problems (O(P * n)):
+    #   score_k = sum_{exact}(dh_k/dtheta_k / h_sys(t_i)) - sum(dH_k/dtheta_k)
+    # The cumulative hazard derivative uses the component's analytical score_fn
+    # (via all-censored trick) when available; otherwise numDeriv per-component.
+    # The hazard derivative uses numDeriv::jacobian on the component rate (low-dim).
+    sys_score_fn <- function(df, par, ob_col = "t", delta_col = "delta", ...) {
+        t_obs <- df[[ob_col]]
+        delta <- if (delta_col %in% names(df)) df[[delta_col]] else rep(1L, nrow(df))
+        n_obs <- length(t_obs)
+        exact_idx <- which(delta == 1)
+        n_exact <- length(exact_idx)
+
+        # Compute system hazard at exact observation times
+        if (n_exact > 0) {
+            t_exact <- t_obs[exact_idx]
+            h_sys_exact <- numeric(n_exact)
+            for (j in seq_len(m)) {
+                h_sys_exact <- h_sys_exact +
+                    components[[j]]$rate(t_exact, par[layout[[j]]], ...)
+            }
+        }
+
+        score_vec <- numeric(total_np)
+
+        for (j in seq_len(m)) {
+            par_j <- par[layout[[j]]]
+            comp_j <- components[[j]]
+
+            # Part 1: Cumulative hazard derivative = sum_i dH_j(t_i)/dtheta_j
+            if (!is.null(comp_j$score_fn)) {
+                # Analytical: score_fn(all_censored) = -sum dH_j/dtheta_j
+                df_cens <- df
+                df_cens[[delta_col]] <- rep(0L, n_obs)
+                cum_haz_deriv <- -comp_j$score_fn(
+                    df_cens, par_j,
+                    ob_col = ob_col, delta_col = delta_col, ...)
+            } else {
+                # Numerical fallback per-component (lower-dim than full system)
+                cum_haz_sum_fn <- function(p) {
+                    if (!is.null(comp_j$cum_haz_rate)) {
+                        sum(comp_j$cum_haz_rate(t_obs, p, ...))
+                    } else {
+                        sum(vapply(t_obs, function(ti) {
+                            stats::integrate(
+                                function(s) comp_j$rate(s, p, ...), 0, ti
+                            )$value
+                        }, numeric(1)))
+                    }
+                }
+                cum_haz_deriv <- numDeriv::grad(cum_haz_sum_fn, par_j)
+            }
+
+            # Part 2: Hazard derivative for exact observations
+            # = sum_{i:exact} dh_j(t_i)/dtheta_j / h_sys(t_i)
+            if (n_exact > 0) {
+                rate_at_exact <- function(p) comp_j$rate(t_exact, p, ...)
+                dh_j <- numDeriv::jacobian(rate_at_exact, par_j)
+                haz_deriv_term <- colSums(dh_j / h_sys_exact)
+            } else {
+                haz_deriv_term <- numeric(n_par[j])
+            }
+
+            score_vec[layout[[j]]] <- haz_deriv_term - cum_haz_deriv
+        }
+
+        score_vec
+    }
+
     # Construct as dfr_dist — inherits all methods automatically
     obj <- dfr_dist(
         rate = sys_rate,
         par = par,
         cum_haz_rate = sys_cum_haz,
-        score_fn = NULL,
+        score_fn = sys_score_fn,
         hess_fn = NULL
     )
 
