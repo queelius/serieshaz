@@ -2,7 +2,8 @@ Package: serieshaz
 Title: Series System Distributions from Dynamic Failure Rate Components
 Version: 0.1.1
 Authors@R: person("Alexander", "Towell", , "lex@metafunctor.com",
-                  role = c("aut", "cre"))
+                  role = c("aut", "cre"),
+                  comment = c(ORCID = "0000-0001-6443-9897"))
 Description: Compose multiple dynamic failure rate (DFR) distributions into
     series system distributions. A series system fails when any component
     fails, giving a system hazard equal to the sum of component hazards.

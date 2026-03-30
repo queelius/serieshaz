@@ -7,3 +7,5 @@
 ^_pkgdown\.yml$
 ^docs$
 ^vignettes/.*_cache$
+^CONTRIBUTING\.md$
+^CODE_OF_CONDUCT\.md$
