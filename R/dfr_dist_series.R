@@ -76,12 +76,14 @@
 #' \eqn{H_{sys}(t) = \sum_j H_j(t)}. Otherwise, falls back to numerical
 #' integration.
 #'
-#' \strong{Score function}: Uses a decomposed per-component approach rather
-#' than \code{numDeriv} on the full system log-likelihood. When components
-#' provide analytical \code{score_fn}, the cumulative hazard derivative is
-#' computed analytically; the hazard derivative uses \code{numDeriv::jacobian}
-#' per-component (lower-dimensional). The Hessian falls back to
-#' \code{numDeriv::hessian} on the composed log-likelihood.
+#' \strong{Score and Hessian}: Both use a decomposed per-component approach
+#' rather than \code{numDeriv} on the full system log-likelihood. When
+#' components provide analytical \code{score_fn}/\code{hess_fn}, the
+#' cumulative hazard derivatives are computed analytically via the
+#' all-censored trick; the hazard derivatives use \code{numDeriv::jacobian}
+#' (score) or \code{numDeriv::hessian} (Hessian) per-component. The Hessian
+#' exploits block structure: cross-component blocks use only the rate
+#' Jacobians already computed for the score.
 #'
 #' \strong{Identifiability}: Exponential series systems are \emph{not}
 #' identifiable from system-level data alone --- only the sum of rates is
@@ -155,7 +157,7 @@
 #'
 #' @family series system
 #' @importFrom flexhaz dfr_dist is_dfr_dist
-#' @importFrom numDeriv jacobian grad
+#' @importFrom numDeriv jacobian grad hessian
 #' @export
 dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     stopifnot(is.list(components), length(components) >= 1L)
@@ -296,13 +298,113 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
         score_vec
     }
 
+    # Build decomposed system Hessian function.
+    # Block structure:
+    #   Within-component (k = k):
+    #     sum_{exact} [d2h_k/dtheta_k^2 / h_sys - (dh_k)(dh_k)^T / h_sys^2]
+    #     - sum_i d2H_k/dtheta_k^2
+    #   Cross-component (k != l):
+    #     -sum_{exact} (dh_k/dtheta_k)(dh_l/dtheta_l)^T / h_sys^2
+    sys_hess_fn <- function(df, par, ob_col = "t", delta_col = "delta", ...) {
+        t_obs <- df[[ob_col]]
+        delta <- if (delta_col %in% names(df)) df[[delta_col]] else rep(1L, nrow(df))
+        n_obs <- length(t_obs)
+        exact_idx <- which(delta == 1)
+        n_exact <- length(exact_idx)
+
+        hess_mat <- matrix(0, nrow = total_np, ncol = total_np)
+
+        # Compute system hazard and per-component rate Jacobians at exact obs
+        dh_list <- vector("list", m)  # rate Jacobians for cross-component terms
+        if (n_exact > 0) {
+            t_exact <- t_obs[exact_idx]
+            h_sys_exact <- numeric(n_exact)
+            for (j in seq_len(m)) {
+                par_j <- par[layout[[j]]]
+                h_sys_exact <- h_sys_exact +
+                    components[[j]]$rate(t_exact, par_j, ...)
+                rate_fn_j <- function(p) components[[j]]$rate(t_exact, p, ...)
+                dh_list[[j]] <- numDeriv::jacobian(rate_fn_j, par_j)
+            }
+            inv_h <- 1 / h_sys_exact
+            inv_h2 <- inv_h * inv_h
+        }
+
+        # Within-component blocks
+        for (j in seq_len(m)) {
+            par_j <- par[layout[[j]]]
+            np_j <- n_par[j]
+            comp_j <- components[[j]]
+            idx_j <- layout[[j]]
+
+            # Cumulative hazard Hessian: d2(sum_i H_j)/dtheta_j^2
+            if (!is.null(comp_j$hess_fn)) {
+                df_cens <- df
+                df_cens[[delta_col]] <- rep(0L, n_obs)
+                cum_haz_hess <- -comp_j$hess_fn(
+                    df_cens, par_j,
+                    ob_col = ob_col, delta_col = delta_col, ...)
+            } else {
+                cum_haz_sum_fn <- function(p) {
+                    if (!is.null(comp_j$cum_haz_rate)) {
+                        sum(comp_j$cum_haz_rate(t_obs, p, ...))
+                    } else {
+                        sum(vapply(t_obs, function(ti) {
+                            stats::integrate(
+                                function(s) comp_j$rate(s, p, ...), 0, ti
+                            )$value
+                        }, numeric(1)))
+                    }
+                }
+                cum_haz_hess <- numDeriv::hessian(cum_haz_sum_fn, par_j)
+            }
+
+            if (n_exact > 0) {
+                dh_j <- dh_list[[j]]
+
+                # Rate Hessian: sum_i d2h_j/dtheta_j^2 / h_sys(t_i)
+                # Compute per-observation Hessians of the rate function
+                rate_hess_term <- matrix(0, np_j, np_j)
+                for (i in seq_len(n_exact)) {
+                    ti <- t_exact[i]
+                    d2h_i <- numDeriv::hessian(
+                        function(p) components[[j]]$rate(ti, p, ...), par_j)
+                    rate_hess_term <- rate_hess_term + d2h_i * inv_h[i]
+                }
+
+                # Outer product: -sum_i (dh_j)(dh_j)^T / h_sys^2
+                outer_term <- crossprod(dh_j * inv_h2, dh_j)
+
+                hess_mat[idx_j, idx_j] <- rate_hess_term - outer_term - cum_haz_hess
+            } else {
+                hess_mat[idx_j, idx_j] <- -cum_haz_hess
+            }
+        }
+
+        # Cross-component blocks (k != l)
+        if (n_exact > 0 && m > 1) {
+            for (k in seq_len(m - 1)) {
+                for (l in (k + 1):m) {
+                    idx_k <- layout[[k]]
+                    idx_l <- layout[[l]]
+                    # -sum_i (dh_k)(dh_l)^T / h_sys^2
+                    cross <- -crossprod(dh_list[[k]] * inv_h2, dh_list[[l]])
+                    hess_mat[idx_k, idx_l] <- cross
+                    hess_mat[idx_l, idx_k] <- t(cross)
+                }
+            }
+        }
+
+        hess_mat
+    }
+
     # Construct as dfr_dist — inherits all methods automatically
     obj <- dfr_dist(
         rate = sys_rate,
         par = par,
         cum_haz_rate = sys_cum_haz,
         score_fn = sys_score_fn,
-        hess_fn = NULL
+        hess_fn = sys_hess_fn
     )
 
     # Attach series-specific metadata

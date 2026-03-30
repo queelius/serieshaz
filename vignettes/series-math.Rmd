@@ -305,20 +305,41 @@ The score at the MLE is orders of magnitude smaller than at the true parameters,
 confirming the optimizer has found the stationary point.  (The residual is due
 to finite optimizer tolerance, not a problem with the score computation.)
 
-### Hessian
+### Decomposed Hessian
 
-The Hessian (second derivative matrix) is still computed via
-`numDeriv::hessian` on the log-likelihood.  A decomposed Hessian using the
-block structure --- within-component blocks $\partial^2\ell/\partial\boldsymbol{\theta}_k^2$
-and cross-component blocks
-$-\sum_i \frac{\partial h_k}{\partial\boldsymbol{\theta}_k}\frac{\partial h_l^{\!\top}}{\partial\boldsymbol{\theta}_l} / h_{sys}^2$
---- is a natural future extension.
+The Hessian also exploits the series structure.  It has a natural block
+decomposition into within-component and cross-component terms:
+
+**Within-component block** ($k = l$):
+$$\frac{\partial^2 \ell}{\partial \boldsymbol{\theta}_k \partial \boldsymbol{\theta}_k^\top}
+= \sum_{i:\,\delta_i=1} \left[
+  \frac{1}{h_{sys}(t_i)} \frac{\partial^2 h_k}{\partial \boldsymbol{\theta}_k \partial \boldsymbol{\theta}_k^\top}
+  - \frac{1}{h_{sys}(t_i)^2}
+    \frac{\partial h_k}{\partial \boldsymbol{\theta}_k}
+    \frac{\partial h_k^\top}{\partial \boldsymbol{\theta}_k}
+\right]
+- \sum_i \frac{\partial^2 H_k}{\partial \boldsymbol{\theta}_k \partial \boldsymbol{\theta}_k^\top}$$
+
+**Cross-component block** ($k \neq l$):
+$$\frac{\partial^2 \ell}{\partial \boldsymbol{\theta}_k \partial \boldsymbol{\theta}_l^\top}
+= -\sum_{i:\,\delta_i=1}
+  \frac{1}{h_{sys}(t_i)^2}
+  \frac{\partial h_k}{\partial \boldsymbol{\theta}_k}
+  \frac{\partial h_l^\top}{\partial \boldsymbol{\theta}_l}$$
+
+The cross-component blocks are free --- they reuse the rate Jacobians already
+computed for the score.  The cumulative hazard Hessian
+$\partial^2 H_k / \partial \boldsymbol{\theta}_k^2$ is extracted analytically
+via the all-censored trick on `hess_fn` when available.  The rate Hessian
+$\partial^2 h_k / \partial \boldsymbol{\theta}_k^2$ uses `numDeriv::hessian`
+per-component per observation.
 
 ```{r hessian-demo}
 H_fn <- hess_loglik(sys2)
 hess_val <- H_fn(df2, par = coef(result))
 evals <- round(eigen(hess_val, symmetric = TRUE)$values, 2)
 cat("Hessian eigenvalues at MLE:", evals, "\n")
+cat("Hessian is symmetric:", all.equal(hess_val, t(hess_val)), "\n")
 ```
 
 All eigenvalues are negative, confirming the MLE is a local maximum.  (For

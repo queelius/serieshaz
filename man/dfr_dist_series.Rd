@@ -42,12 +42,14 @@ For example, if component 1 has 2 parameters and component 2 has 1, then
 \eqn{H_{sys}(t) = \sum_j H_j(t)}. Otherwise, falls back to numerical
 integration.
 
-\strong{Score function}: Uses a decomposed per-component approach rather
-than \code{numDeriv} on the full system log-likelihood. When components
-provide analytical \code{score_fn}, the cumulative hazard derivative is
-computed analytically; the hazard derivative uses \code{numDeriv::jacobian}
-per-component (lower-dimensional). The Hessian falls back to
-\code{numDeriv::hessian} on the composed log-likelihood.
+\strong{Score and Hessian}: Both use a decomposed per-component approach
+rather than \code{numDeriv} on the full system log-likelihood. When
+components provide analytical \code{score_fn}/\code{hess_fn}, the
+cumulative hazard derivatives are computed analytically via the
+all-censored trick; the hazard derivatives use \code{numDeriv::jacobian}
+(score) or \code{numDeriv::hessian} (Hessian) per-component. The Hessian
+exploits block structure: cross-component blocks use only the rate
+Jacobians already computed for the score.
 
 \strong{Identifiability}: Exponential series systems are \emph{not}
 identifiable from system-level data alone --- only the sum of rates is

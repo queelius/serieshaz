@@ -2,12 +2,14 @@
 
 ## Improvements
 
-* Decomposed system score function: instead of `numDeriv::grad` on the full
-  system log-likelihood, the score is now computed per-component. When
-  components provide analytical `score_fn`, the cumulative hazard derivative
-  is extracted analytically (via the all-censored trick); the hazard derivative
-  uses `numDeriv::jacobian` per-component (lower-dimensional). This yields
-  roughly m-fold speedup for systems with m components.
+* Decomposed system score and Hessian: instead of `numDeriv` on the full
+  system log-likelihood, both are computed per-component. When components
+  provide analytical `score_fn`/`hess_fn`, the cumulative hazard derivatives
+  are extracted analytically (via the all-censored trick); the hazard
+  derivatives use `numDeriv::jacobian`/`numDeriv::hessian` per-component
+  (lower-dimensional). The Hessian exploits block structure: cross-component
+  blocks reuse rate Jacobians from the score. Roughly m-fold speedup for
+  systems with m components.
 
 * Input validation for `component()` and `component_hazard()`: the `j`
   parameter now rejects non-integer, NA, and vector inputs (previously `j = 1.5`
@@ -43,9 +45,6 @@
 
 * Exponential series systems are not identifiable from system-level data alone
   (only the sum of rates is identifiable).
-* The Hessian still falls back to `numDeriv::hessian` on the full system
-  log-likelihood. A decomposed Hessian using the block structure
-  (within-component + cross-component terms) is a future optimization.
 
 # serieshaz 0.1.0
 
