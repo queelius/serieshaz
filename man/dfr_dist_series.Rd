@@ -25,7 +25,8 @@ Extra fields: \code{$components}, \code{$layout}, \code{$m}, \code{$n_par}.
 \description{
 Composes m \code{dfr_dist} component distributions into a series system
 distribution. A series system fails when any component fails, so the
-system hazard is the sum of component hazards: \eqn{h_{sys}(t) = \sum_j h_j(t)}.
+system hazard is the sum of component hazards:
+\eqn{h_{sys}(t) = \sum_j h_j(t)}.
 }
 \details{
 The resulting object inherits from \code{dfr_dist}, so all existing methods

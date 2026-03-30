@@ -297,7 +297,7 @@ S_fn <- surv(m1)
 
 # Wrap S_fn for integrate() which may pass vectorized t values
 compute_mtbf <- function(p) {
-    integrate(function(t) sapply(t, function(ti) S_fn(ti, par = p)),
+    integrate(function(t) vapply(t, function(ti) S_fn(ti, par = p), numeric(1)),
               0, Inf, subdivisions = 1000L)$value
 }
 

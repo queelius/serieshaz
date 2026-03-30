@@ -47,7 +47,8 @@
 #'
 #' Composes m \code{dfr_dist} component distributions into a series system
 #' distribution. A series system fails when any component fails, so the
-#' system hazard is the sum of component hazards: \eqn{h_{sys}(t) = \sum_j h_j(t)}.
+#' system hazard is the sum of component hazards:
+#' \eqn{h_{sys}(t) = \sum_j h_j(t)}.
 #'
 #' The resulting object inherits from \code{dfr_dist}, so all existing methods
 #' (hazard, survival, CDF, density, sampling, log-likelihood, MLE fitting)
@@ -234,10 +235,11 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     #   score_k = sum_{exact}(dh_k/dtheta_k / h_sys(t_i)) - sum(dH_k/dtheta_k)
     # The cumulative hazard derivative uses the component's analytical score_fn
     # (via all-censored trick) when available; otherwise numDeriv per-component.
-    # The hazard derivative uses numDeriv::jacobian on the component rate (low-dim).
+    # Hazard derivative uses numDeriv::jacobian on component rate.
     sys_score_fn <- function(df, par, ob_col = "t", delta_col = "delta", ...) {
         t_obs <- df[[ob_col]]
-        delta <- if (delta_col %in% names(df)) df[[delta_col]] else rep(1L, nrow(df))
+        delta <- if (delta_col %in% names(df))
+            df[[delta_col]] else rep(1L, nrow(df))
         n_obs <- length(t_obs)
         exact_idx <- which(delta == 1)
         n_exact <- length(exact_idx)
@@ -307,7 +309,8 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     #     -sum_{exact} (dh_k/dtheta_k)(dh_l/dtheta_l)^T / h_sys^2
     sys_hess_fn <- function(df, par, ob_col = "t", delta_col = "delta", ...) {
         t_obs <- df[[ob_col]]
-        delta <- if (delta_col %in% names(df)) df[[delta_col]] else rep(1L, nrow(df))
+        delta <- if (delta_col %in% names(df))
+            df[[delta_col]] else rep(1L, nrow(df))
         n_obs <- length(t_obs)
         exact_idx <- which(delta == 1)
         n_exact <- length(exact_idx)
@@ -375,7 +378,8 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
                 # Outer product: -sum_i (dh_j)(dh_j)^T / h_sys^2
                 outer_term <- crossprod(dh_j * inv_h2, dh_j)
 
-                hess_mat[idx_j, idx_j] <- rate_hess_term - outer_term - cum_haz_hess
+                hess_mat[idx_j, idx_j] <-
+                    rate_hess_term - outer_term - cum_haz_hess
             } else {
                 hess_mat[idx_j, idx_j] <- -cum_haz_hess
             }
@@ -474,7 +478,8 @@ is_dfr_dist_series <- function(x) {
 #'   \item One line per component showing its parameter count and current
 #'     parameter values (or "unknown" if parameters are \code{NULL})
 #'   \item The system hazard formula: \eqn{h_{sys}(t) = \sum_j h_j(t, \theta_j)}
-#'   \item The system survival formula: \eqn{S_{sys}(t) = \prod_j S_j(t, \theta_j)}
+#'   \item The system survival formula:
+#'     \eqn{S_{sys}(t) = \prod_j S_j(t, \theta_j)}
 #' }
 #'
 #' @examples

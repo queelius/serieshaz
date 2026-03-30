@@ -26,7 +26,8 @@ The output includes:
 \item One line per component showing its parameter count and current
 parameter values (or "unknown" if parameters are \code{NULL})
 \item The system hazard formula: \eqn{h_{sys}(t) = \sum_j h_j(t, \theta_j)}
-\item The system survival formula: \eqn{S_{sys}(t) = \prod_j S_j(t, \theta_j)}
+\item The system survival formula:
+\eqn{S_{sys}(t) = \prod_j S_j(t, \theta_j)}
 }
 }
 \examples{
