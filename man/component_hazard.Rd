@@ -44,7 +44,7 @@ are the component-local parameters.
 
 }}
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -60,7 +60,6 @@ h_sys <- hazard(sys)
 t <- 10
 h1(t) + h2(t)  # 0.3
 h_sys(t)        # 0.3 (same!)
-}
 
 }
 \seealso{

@@ -69,7 +69,7 @@ hazards.
 \code{dist}. All methods from these parent classes work automatically.
 }
 \examples{
-\donttest{
+
 library(flexhaz)
 
 # --- Basic exponential series ---
@@ -111,7 +111,6 @@ solver <- fit(sys)
 # coef(result)   # fitted parameters
 # vcov(result)   # variance-covariance matrix
 # logLik(result) # maximized log-likelihood
-}
 
 }
 \seealso{

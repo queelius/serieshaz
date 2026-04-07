@@ -6,7 +6,7 @@
 \alias{serieshaz-package}
 \title{serieshaz: Series System Distributions from Dynamic Failure Rate Components}
 \description{
-Compose multiple dynamic failure rate (DFR) distributions into series system distributions. A series system fails when any component fails, giving a system hazard equal to the sum of component hazards. The resulting object inherits from 'dfr_dist' so all existing methods (hazard, survival, CDF, density, sampling, MLE fitting) work automatically.
+Compose multiple dynamic failure rate distributions into series system distributions where the system hazard equals the sum of component hazards. Supports hazard, survival, cumulative distribution function, density, sampling, and maximum likelihood estimation fitting via the dfr_dist() class from 'flexhaz'. Methods for series system reliability follow Barlow and Proschan (1975, ISBN:0898713692).
 }
 \details{
 The \pkg{serieshaz} package composes multiple dynamic failure rate

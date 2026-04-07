@@ -14,7 +14,7 @@
 #' decompositions or computing failure attribution.
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -23,7 +23,6 @@
 #'     dfr_gompertz(a = 0.01, b = 0.05)
 #' ))
 #' ncomponents(sys)  # 3
-#' }
 #'
 #' @seealso
 #' \code{\link{component}} to extract individual components,
@@ -61,7 +60,7 @@ ncomponents <- function(x, ...) {
 #' original series system.
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -76,7 +75,6 @@ ncomponents <- function(x, ...) {
 #' # Evaluate its hazard independently
 #' h_wb <- hazard(wb)
 #' h_wb(50)
-#' }
 #'
 #' @seealso
 #' \code{\link{ncomponents}} for the component count,
@@ -119,7 +117,7 @@ component <- function(x, j, ...) {
 #' components.
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -129,7 +127,6 @@ component <- function(x, j, ...) {
 #' ))
 #' param_layout(sys)
 #' # list(1:2, 3, 4:5)
-#' }
 #'
 #' @seealso
 #' \code{\link{component}} to extract a component with its parameters,
@@ -165,7 +162,7 @@ param_layout <- function(x, ...) {
 #' }
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -181,7 +178,6 @@ param_layout <- function(x, ...) {
 #' t <- 10
 #' h1(t) + h2(t)  # 0.3
 #' h_sys(t)        # 0.3 (same!)
-#' }
 #'
 #' @seealso
 #' \code{\link{component}} to extract the full component object,
@@ -225,7 +221,7 @@ component_hazard <- function(x, j, ...) {
 #' failures are caused by each component?
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -245,7 +241,6 @@ component_hazard <- function(x, j, ...) {
 #' failing <- apply(mat, 1, which.min)
 #' table(failing) / 1000
 #' # Proportions ~= c(1/6, 2/6, 3/6) for rates (0.1, 0.2, 0.3)
-#' }
 #'
 #' @seealso
 #' \code{\link[algebraic.dist]{sampler}} for system-level sampling,

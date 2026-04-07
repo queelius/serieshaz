@@ -31,7 +31,7 @@ parameter values (or "unknown" if parameters are \code{NULL})
 }
 }
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -44,7 +44,6 @@ print(sys)
 #   Component 2: 2 param(s) [2, 100]
 # System hazard: h_sys(t) = sum_j h_j(t, theta_j)
 # Survival: S_sys(t) = exp(-H_sys(t)) = prod_j S_j(t, theta_j)
-}
 
 }
 \seealso{

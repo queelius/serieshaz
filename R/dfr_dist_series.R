@@ -103,7 +103,7 @@
 #' \code{dist}. All methods from these parent classes work automatically.
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' # --- Basic exponential series ---
@@ -145,7 +145,6 @@
 #' # coef(result)   # fitted parameters
 #' # vcov(result)   # variance-covariance matrix
 #' # logLik(result) # maximized log-likelihood
-#' }
 #'
 #' @seealso
 #' \code{\link{is_dfr_dist_series}} for the type predicate,
@@ -436,7 +435,7 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
 #' distinguish series systems from ordinary \code{dfr_dist} objects.
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -451,7 +450,6 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
 #' is_dfr_dist(single)         # TRUE
 #'
 #' is_dfr_dist_series(42)  # FALSE
-#' }
 #'
 #' @seealso \code{\link{dfr_dist_series}} for the constructor,
 #'   \code{\link[flexhaz]{is_dfr_dist}} for the parent class predicate
@@ -483,7 +481,7 @@ is_dfr_dist_series <- function(x) {
 #' }
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -496,7 +494,6 @@ is_dfr_dist_series <- function(x) {
 #' #   Component 2: 2 param(s) [2, 100]
 #' # System hazard: h_sys(t) = sum_j h_j(t, theta_j)
 #' # Survival: S_sys(t) = exp(-H_sys(t)) = prod_j S_j(t, theta_j)
-#' }
 #'
 #' @seealso \code{\link{dfr_dist_series}} for the constructor
 #' @family series system
@@ -553,7 +550,7 @@ print.dfr_dist_series <- function(x, ...) {
 #' that defines series systems.
 #'
 #' @examples
-#' \donttest{
+#'
 #' library(flexhaz)
 #'
 #' sys <- dfr_dist_series(list(
@@ -561,7 +558,6 @@ print.dfr_dist_series <- function(x, ...) {
 #'     dfr_weibull(shape = 2, scale = 100)
 #' ))
 #' assumptions(sys)
-#' }
 #'
 #' @seealso
 #' \code{\link[likelihood.model]{assumptions}} for the generic,

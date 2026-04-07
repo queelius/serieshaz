@@ -44,7 +44,7 @@ component independence, in particular, invalidates the hazard-sum property
 that defines series systems.
 }
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -52,7 +52,6 @@ sys <- dfr_dist_series(list(
     dfr_weibull(shape = 2, scale = 100)
 ))
 assumptions(sys)
-}
 
 }
 \seealso{

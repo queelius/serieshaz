@@ -47,7 +47,7 @@ components.
 
 }}
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -57,7 +57,6 @@ sys <- dfr_dist_series(list(
 ))
 param_layout(sys)
 # list(1:2, 3, 4:5)
-}
 
 }
 \seealso{

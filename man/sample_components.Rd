@@ -53,7 +53,7 @@ component j. The system lifetime is \code{apply(mat, 1, min)}.
 
 }}
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -73,7 +73,6 @@ t_sys <- apply(mat, 1, min)
 failing <- apply(mat, 1, which.min)
 table(failing) / 1000
 # Proportions ~= c(1/6, 2/6, 3/6) for rates (0.1, 0.2, 0.3)
-}
 
 }
 \seealso{

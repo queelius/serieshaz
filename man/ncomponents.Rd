@@ -33,7 +33,7 @@ decompositions or computing failure attribution.
 
 }}
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -42,7 +42,6 @@ sys <- dfr_dist_series(list(
     dfr_gompertz(a = 0.01, b = 0.05)
 ))
 ncomponents(sys)  # 3
-}
 
 }
 \seealso{

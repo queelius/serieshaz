@@ -23,7 +23,7 @@ that passes \code{is_dfr_dist_series()} will also pass
 distinguish series systems from ordinary \code{dfr_dist} objects.
 }
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -38,7 +38,6 @@ is_dfr_dist_series(single)  # FALSE
 is_dfr_dist(single)         # TRUE
 
 is_dfr_dist_series(42)  # FALSE
-}
 
 }
 \seealso{

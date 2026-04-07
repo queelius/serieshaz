@@ -46,7 +46,7 @@ with its current parameters from the series system's parameter vector.
 
 }}
 \examples{
-\donttest{
+
 library(flexhaz)
 
 sys <- dfr_dist_series(list(
@@ -61,7 +61,6 @@ params(wb)  # c(2, 100)
 # Evaluate its hazard independently
 h_wb <- hazard(wb)
 h_wb(50)
-}
 
 }
 \seealso{
