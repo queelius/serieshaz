@@ -1,11 +1,10 @@
-#' @describeIn ncomponents Number of components in a series system.
+#' @method ncomponents dfr_dist_series
 #' @export
 ncomponents.dfr_dist_series <- function(x, ...) {
     x$m
 }
 
-#' @describeIn component Extract component j as a standalone \code{dfr_dist}
-#'   with its current parameters from the series system's parameter vector.
+#' @method component dfr_dist_series
 #' @export
 component.dfr_dist_series <- function(x, j, ...) {
     if (!is.numeric(j) || length(j) != 1L || is.na(j) || j != as.integer(j))
@@ -68,4 +67,46 @@ sample_components.dfr_dist_series <- function(x, n, par = NULL, ...) {
     }
     colnames(mat) <- paste0("comp", seq_len(x$m))
     mat
+}
+
+
+# ==========================================================================
+# dist.structure topology methods (series specialization)
+# ==========================================================================
+#
+# A series system has trivial topology: phi = AND, min_paths = {1..m},
+# min_cuts = {{1}, ..., {m}}, signature = (1, 0, ..., 0). Registering
+# specialized methods avoids the dist.structure default-method enumeration.
+# All other dist.structure generics (critical_states, structural_importance,
+# reliability, dual, is_coherent, system_lifetime, system_censoring) work
+# automatically via dispatch through the dist_structure class.
+# ==========================================================================
+
+
+#' @method phi dfr_dist_series
+#' @export
+phi.dfr_dist_series <- function(x, state) {
+    stopifnot(length(state) == x$m)
+    as.integer(all(state == 1L))
+}
+
+
+#' @method min_paths dfr_dist_series
+#' @export
+min_paths.dfr_dist_series <- function(x) {
+    list(seq_len(x$m))
+}
+
+
+#' @method min_cuts dfr_dist_series
+#' @export
+min_cuts.dfr_dist_series <- function(x) {
+    lapply(seq_len(x$m), function(j) j)
+}
+
+
+#' @method system_signature dfr_dist_series
+#' @export
+system_signature.dfr_dist_series <- function(x) {
+    c(1, rep(0, x$m - 1L))
 }

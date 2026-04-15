@@ -81,9 +81,7 @@ table(failing) / 1000
 \code{\link{dfr_dist_series}} for the constructor
 
 Other system introspection: 
-\code{\link{component}()},
 \code{\link{component_hazard}()},
-\code{\link{ncomponents}()},
 \code{\link{param_layout}()}
 }
 \concept{system introspection}

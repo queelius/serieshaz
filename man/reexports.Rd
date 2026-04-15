@@ -14,6 +14,12 @@
 \alias{hess_loglik}
 \alias{assumptions}
 \alias{fit}
+\alias{ncomponents}
+\alias{component}
+\alias{phi}
+\alias{min_paths}
+\alias{min_cuts}
+\alias{system_signature}
 \alias{dfr_dist}
 \alias{is_dfr_dist}
 \alias{cum_haz}
@@ -29,6 +35,8 @@ below to see their documentation.
 
 \describe{
   \item{algebraic.dist}{\code{\link[algebraic.dist]{cdf}}, \code{\link[algebraic.dist]{hazard}}, \code{\link[algebraic.dist]{inv_cdf}}, \code{\link[algebraic.dist]{params}}, \code{\link[algebraic.dist]{sampler}}, \code{\link[algebraic.dist]{surv}}}
+
+  \item{dist.structure}{\code{\link[dist.structure]{component}}, \code{\link[dist.structure]{min_cuts}}, \code{\link[dist.structure]{min_paths}}, \code{\link[dist.structure]{ncomponents}}, \code{\link[dist.structure]{phi}}, \code{\link[dist.structure]{system_signature}}}
 
   \item{flexhaz}{\code{\link[flexhaz]{cum_haz}}, \code{\link[flexhaz]{dfr_dist}}, \code{\link[flexhaz]{dfr_exponential}}, \code{\link[flexhaz]{dfr_gompertz}}, \code{\link[flexhaz]{dfr_loglogistic}}, \code{\link[flexhaz]{dfr_weibull}}, \code{\link[flexhaz]{is_dfr_dist}}}
 

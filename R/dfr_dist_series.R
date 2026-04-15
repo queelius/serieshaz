@@ -416,7 +416,15 @@ dfr_dist_series <- function(components, par = NULL, n_par = NULL) {
     obj$m <- m
     obj$n_par <- n_par
 
-    class(obj) <- c("dfr_dist_series", class(obj))
+    # Class chain: dfr_dist_series first (most specific), then the existing
+    # dfr_dist chain (so flexhaz's optimized surv/cdf/sampler/hazard methods
+    # win for dispatch), then "dist_structure" inserted after dfr_dist so
+    # the dist.structure topology generics (phi, min_paths, ...) dispatch
+    # to the methods we register on dfr_dist_series and the rest fall
+    # through to dist.structure defaults.
+    existing <- class(obj)
+    class(obj) <- c("dfr_dist_series", existing[1L],
+                    "dist_structure", existing[-1L])
     obj
 }
 

@@ -1,3 +1,31 @@
+# serieshaz 0.2.0
+
+## New features
+
+* `dfr_dist_series` objects now also inherit from `dist_structure` (from
+  the `dist.structure` package). Series-system topology generics work
+  out of the box: `phi`, `min_paths`, `min_cuts`, `system_signature`,
+  plus the defaults from `dist.structure` (`structural_importance`,
+  `reliability`, `dual`, `is_coherent`, `critical_states`,
+  `system_lifetime`, `system_censoring`, `birnbaum_importance`,
+  `criticality_importance`, `vesely_fussell_importance`,
+  `substitute_component`, `compose_systems`).
+
+* The local `ncomponents` and `component` generics are removed and
+  re-exported from `dist.structure` instead. This eliminates a latent
+  namespace collision when both `serieshaz` and `dist.structure` are
+  loaded. Existing user code that calls `ncomponents(sys)` or
+  `component(sys, j)` is unaffected.
+
+## Internal
+
+* Class chain on `dfr_dist_series` is now
+  `c("dfr_dist_series", "dfr_dist", "dist_structure", "univariate_dist", "dist")`.
+  The `"dist_structure"` insertion is positioned after `"dfr_dist"` so
+  the optimized `flexhaz` survival, hazard, sampler, and CDF methods
+  continue to dispatch first; `"dist_structure"` provides defaults only
+  for generics that `flexhaz`/`serieshaz` do not already implement.
+
 # serieshaz 0.1.1
 
 ## Improvements

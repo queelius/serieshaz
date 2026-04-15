@@ -35,6 +35,26 @@ likelihood.model::assumptions
 #' @export
 generics::fit
 
+#' @importFrom dist.structure ncomponents component phi min_paths
+#'   min_cuts system_signature
+#' @export
+dist.structure::ncomponents
+
+#' @export
+dist.structure::component
+
+#' @export
+dist.structure::phi
+
+#' @export
+dist.structure::min_paths
+
+#' @export
+dist.structure::min_cuts
+
+#' @export
+dist.structure::system_signature
+
 #' @importFrom flexhaz dfr_dist is_dfr_dist cum_haz
 #'   dfr_exponential dfr_weibull dfr_gompertz dfr_loglogistic
 #' @export

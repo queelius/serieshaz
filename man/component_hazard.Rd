@@ -68,8 +68,6 @@ h_sys(t)        # 0.3 (same!)
 \code{\link{dfr_dist_series}} for the constructor
 
 Other system introspection: 
-\code{\link{component}()},
-\code{\link{ncomponents}()},
 \code{\link{param_layout}()},
 \code{\link{sample_components}()}
 }
